@@ -65,9 +65,7 @@ export async function createModule(
         orderBy: { order: "desc" },
       });
       moduleOrder = (lastModule?.order ?? 0) + 1;
-    }
-
-    // Create module
+    } // Create module
     await db.module.create({
       data: {
         courseId,
@@ -78,6 +76,7 @@ export async function createModule(
     });
 
     revalidatePath(`/instructor/courses/${courseId}`);
+    revalidatePath(`/instructor/courses/${courseId}/content`);
 
     return {
       success: true,
@@ -129,7 +128,6 @@ export async function updateModule(
         course: true,
       },
     });
-
     if (!moduleData) {
       return {
         success: false,
@@ -144,6 +142,7 @@ export async function updateModule(
     });
 
     revalidatePath(`/instructor/courses/${moduleData.courseId}`);
+    revalidatePath(`/instructor/courses/${moduleData.courseId}/content`);
 
     return {
       success: true,
@@ -170,7 +169,6 @@ export async function deleteModule(moduleId: string): Promise<ModuleFormState> {
         },
       },
     });
-
     if (!moduleData) {
       return {
         success: false,
@@ -184,6 +182,7 @@ export async function deleteModule(moduleId: string): Promise<ModuleFormState> {
     });
 
     revalidatePath(`/instructor/courses/${moduleData.courseId}`);
+    revalidatePath(`/instructor/courses/${moduleData.courseId}/content`);
 
     return {
       success: true,
@@ -242,6 +241,7 @@ export async function reorderModules(
     );
 
     revalidatePath(`/instructor/courses/${courseId}`);
+    revalidatePath(`/instructor/courses/${courseId}/content`);
 
     return {
       success: true,

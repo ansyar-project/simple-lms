@@ -92,6 +92,7 @@ export async function createLesson(
     });
 
     revalidatePath(`/instructor/courses/${moduleData.courseId}`);
+    revalidatePath(`/instructor/courses/${moduleData.courseId}/content`);
 
     return {
       success: true,
@@ -171,6 +172,7 @@ export async function updateLesson(
     });
 
     revalidatePath(`/instructor/courses/${lesson.module.courseId}`);
+    revalidatePath(`/instructor/courses/${lesson.module.courseId}/content`);
 
     return {
       success: true,
@@ -222,6 +224,7 @@ export async function deleteLesson(lessonId: string): Promise<LessonFormState> {
     });
 
     revalidatePath(`/instructor/courses/${lesson.module.courseId}`);
+    revalidatePath(`/instructor/courses/${lesson.module.courseId}/content`);
 
     return {
       success: true,
@@ -285,6 +288,7 @@ export async function reorderLessons(
     );
 
     revalidatePath(`/instructor/courses/${moduleData.courseId}`);
+    revalidatePath(`/instructor/courses/${moduleData.courseId}/content`);
 
     return {
       success: true,

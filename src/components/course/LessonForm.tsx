@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import React, { useState, useActionState, useEffect } from "react";
 import {
   createLesson,
   updateLesson,
@@ -78,10 +77,22 @@ export default function LessonForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contentType, setContentType] = useState(lesson?.contentType ?? "TEXT");
   const [content, setContent] = useState(lesson?.content ?? "");
-  const [state, formAction] = useFormState(
+  const [state, formAction] = useActionState(
     lesson ? updateLesson : createLesson,
     initialState
-  );
+  ); // Handle success state changes
+  useEffect(() => {
+    if (state.success && !isSubmitting) {
+      onSuccess?.();
+    }
+  }, [state.success, isSubmitting, onSuccess]);
+
+  // Reset loading state when action completes
+  useEffect(() => {
+    if (state.message && isSubmitting) {
+      setIsSubmitting(false);
+    }
+  }, [state.message, isSubmitting]);
 
   const handleSubmit = async (formData: FormData) => {
     // Add the rich text content to form data
@@ -89,14 +100,7 @@ export default function LessonForm({
     formData.set("contentType", contentType);
 
     setIsSubmitting(true);
-    try {
-      formAction(formData);
-      if (state.success) {
-        onSuccess?.();
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+    formAction(formData);
   };
 
   return (

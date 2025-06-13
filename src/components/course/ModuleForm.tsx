@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormState } from "react-dom";
 import {
   createModule,
@@ -42,16 +42,23 @@ export default function ModuleForm({
     initialState
   );
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsSubmitting(true);
-    try {
-      formAction(formData);
-      if (state.success) {
-        onSuccess?.();
-      }
-    } finally {
+  // Handle success state changes
+  useEffect(() => {
+    if (state.success && !isSubmitting) {
+      onSuccess?.();
+    }
+  }, [state.success, isSubmitting, onSuccess]);
+
+  // Reset loading state when action completes
+  useEffect(() => {
+    if (state.message && isSubmitting) {
       setIsSubmitting(false);
     }
+  }, [state.message, isSubmitting]);
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    formAction(formData);
   };
 
   return (
