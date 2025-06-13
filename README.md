@@ -1,36 +1,194 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Learning Management System (LMS)
 
-## Getting Started
+A modern, full-featured Learning Management System built with Next.js 15, featuring course management, real-time content delivery, and comprehensive user authentication.
 
-First, run the development server:
+## ✨ Features
 
+### 🎓 Course Management
+- **Course Creation & Management**: Complete CRUD operations for courses with rich content support
+- **Modular Structure**: Organize courses into modules and lessons with drag-and-drop reordering
+- **Content Types**: Support for videos, documents, quizzes, and interactive content
+- **Course Status Management**: Draft, published, and archived states
+- **Rich Text Editor**: TipTap-powered content editor with images and links
+
+### 👥 User Management & Authentication
+- **Multi-role System**: Students, Instructors, and Administrators
+- **Secure Authentication**: NextAuth.js v5 with email/password and Google OAuth
+- **Role-based Access Control**: Granular permissions and route protection
+- **Session Management**: Redis-backed session storage for scalability
+
+### 📊 Learning Experience
+- **Student Dashboard**: Personalized learning experience with course progress
+- **Instructor Portal**: Course management and student progress tracking
+- **File Management**: MinIO-powered file storage for course materials
+- **Progress Tracking**: Comprehensive learning analytics
+
+### 🔧 Technical Features
+- **Modern Stack**: Next.js 15 with React 19 and TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Real-time Features**: Redis integration for caching and sessions
+- **Responsive Design**: Mobile-first UI with Shadcn components
+- **Docker Support**: Complete containerization for development and production
+
+## 🚀 Technology Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, TailwindCSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: PostgreSQL
+- **Authentication**: NextAuth.js v5
+- **Storage**: MinIO (S3-compatible)
+- **Cache**: Redis
+- **UI Components**: Shadcn UI, Radix UI
+- **Rich Text**: TipTap Editor
+- **Deployment**: Docker, Docker Compose
+
+## 📋 Prerequisites
+
+- Node.js 18+ and pnpm
+- PostgreSQL database
+- Redis server
+- MinIO server (for file storage)
+
+## 🛠️ Installation
+
+### Quick Start with Docker
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd lms
+   ```
+
+2. **Start development environment:**
+   ```bash
+   docker-compose -f docker-compose.dev.yml up -d
+   ```
+
+3. **Access the application:**
+   - Application: http://localhost:3000
+   - Database Studio: Run `pnpm db:studio`
+
+### Manual Setup
+
+1. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+2. **Set up environment variables:**
+   ```bash
+   cp .env.example .env.local
+   # Configure your database, Redis, and MinIO connections
+   ```
+
+3. **Set up the database:**
+   ```bash
+   pnpm db:migrate
+   pnpm db:seed
+   ```
+
+4. **Start the development server:**
+   ```bash
+   pnpm dev
+   ```
+
+## 📝 Available Scripts
+
+- `pnpm dev` - Start development server with Turbopack
+- `pnpm build` - Build production application
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+- `pnpm db:generate` - Generate Prisma client
+- `pnpm db:migrate` - Run database migrations
+- `pnpm db:reset` - Reset database
+- `pnpm db:studio` - Open Prisma Studio
+- `pnpm db:seed` - Seed database with sample data
+
+## 🐳 Docker Deployment
+
+### Development
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Production
+```bash
+docker-compose up -d
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For detailed Docker setup instructions, see [DOCKER.md](./DOCKER.md).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Authentication pages
+│   ├── api/               # API routes
+│   ├── dashboard/         # Student dashboard
+│   └── instructor/        # Instructor portal
+├── components/            # Reusable components
+│   ├── course/           # Course-related components
+│   ├── forms/            # Form components
+│   └── ui/               # UI components
+├── lib/                  # Utilities and configurations
+├── types/                # TypeScript type definitions
+└── actions/              # Server actions
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🔐 Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file with the following variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+# Database
+DATABASE_URL="postgresql://..."
 
-## Deploy on Vercel
+# Authentication
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Google OAuth (optional)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Redis
+REDIS_URL="redis://localhost:6379"
+
+# MinIO
+MINIO_ENDPOINT="localhost"
+MINIO_PORT=9000
+MINIO_ACCESS_KEY="your-access-key"
+MINIO_SECRET_KEY="your-secret-key"
+```
+
+## 🎯 Development Phases
+
+The project is developed in structured phases:
+
+- ✅ **Phase 1**: Foundation Setup (Authentication, Database, UI)
+- 🚧 **Phase 2**: Core Course Management (In Progress)
+- 📋 **Phase 3**: Student Experience & Enrollment
+- 📋 **Phase 4**: Assessments & Quizzes
+- 📋 **Phase 5**: Analytics & Reporting
+
+For detailed development roadmap, see [lms_system_design.md](./lms_system_design.md).
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+- Check the [system design document](./lms_system_design.md)
+- Review the [Docker setup guide](./DOCKER.md)
+- Open an issue on GitHub
