@@ -5,6 +5,7 @@ A modern, full-featured Learning Management System built with Next.js 15, featur
 ## ✨ Features
 
 ### 🎓 Course Management
+
 - **Course Creation & Management**: Complete CRUD operations for courses with rich content support
 - **Modular Structure**: Organize courses into modules and lessons with drag-and-drop reordering
 - **Content Types**: Support for videos, documents, quizzes, and interactive content
@@ -12,18 +13,21 @@ A modern, full-featured Learning Management System built with Next.js 15, featur
 - **Rich Text Editor**: TipTap-powered content editor with images and links
 
 ### 👥 User Management & Authentication
+
 - **Multi-role System**: Students, Instructors, and Administrators
 - **Secure Authentication**: NextAuth.js v5 with email/password and Google OAuth
 - **Role-based Access Control**: Granular permissions and route protection
 - **Session Management**: Redis-backed session storage for scalability
 
 ### 📊 Learning Experience
+
 - **Student Dashboard**: Personalized learning experience with course progress
 - **Instructor Portal**: Course management and student progress tracking
 - **File Management**: MinIO-powered file storage for course materials
 - **Progress Tracking**: Comprehensive learning analytics
 
 ### 🔧 Technical Features
+
 - **Modern Stack**: Next.js 15 with React 19 and TypeScript
 - **Database**: PostgreSQL with Prisma ORM
 - **Real-time Features**: Redis integration for caching and sessions
@@ -54,12 +58,14 @@ A modern, full-featured Learning Management System built with Next.js 15, featur
 ### Quick Start with Docker
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
    cd lms
    ```
 
 2. **Start development environment:**
+
    ```bash
    docker-compose -f docker-compose.dev.yml up -d
    ```
@@ -71,17 +77,20 @@ A modern, full-featured Learning Management System built with Next.js 15, featur
 ### Manual Setup
 
 1. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 2. **Set up environment variables:**
+
    ```bash
    cp .env.example .env.local
    # Configure your database, Redis, and MinIO connections
    ```
 
 3. **Set up the database:**
+
    ```bash
    pnpm db:migrate
    pnpm db:seed
@@ -107,11 +116,13 @@ A modern, full-featured Learning Management System built with Next.js 15, featur
 ## 🐳 Docker Deployment
 
 ### Development
+
 ```bash
 docker-compose -f docker-compose.dev.yml up -d
 ```
 
 ### Production
+
 ```bash
 docker-compose up -d
 ```
@@ -189,6 +200,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🆘 Support
 
 For support and questions:
+
 - Check the [system design document](./lms_system_design.md)
 - Review the [Docker setup guide](./DOCKER.md)
 - Open an issue on GitHub
