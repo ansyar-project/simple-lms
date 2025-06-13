@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Enable standalone output for Docker optimization
+  output: "standalone",
   images: {
     // Allow local images served through our API
     remotePatterns: [
@@ -18,7 +20,7 @@ const nextConfig: NextConfig = {
       // Add your production domain here when deploying
       {
         protocol: "https",
-        hostname: "your-domain.com", // Replace with your actual domain
+        hostname: "lms.ansyar-world.top", // Replace with your actual domain
         pathname: "/api/files/**",
       },
     ],
