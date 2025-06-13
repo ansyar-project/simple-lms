@@ -106,6 +106,16 @@ model Course {
   modules      Module[]
   enrollments  Enrollment[]
 
+  // Indexes for performance
+  @@index([instructorId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([title])
+  @@index([instructorId, status])
+  @@index([instructorId, categoryId])
+  @@index([instructorId, createdAt])
   @@map("courses")
 }
 
