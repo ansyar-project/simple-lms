@@ -10,21 +10,20 @@ import {
   DollarSign,
   Calendar,
   Edit,
-  Play,
-  Pause,
-  Archive,
-  Trash2,
   Plus,
 } from "lucide-react";
 
 interface CoursePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default async function CoursePage({ params }: CoursePageProps) {
-  const course = await getCourseById(params.id);
+export default async function CoursePage({
+  params,
+}: Readonly<CoursePageProps>) {
+  const { id } = await params;
+  const course = await getCourseById(id);
 
   if (!course) {
     notFound();
@@ -57,7 +56,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </Link>
         </div>
       </div>
-
       {/* Course Header */}
       <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
         <div className="md:flex">
@@ -118,7 +116,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                   <div>
                     <p className="text-sm text-gray-500">Modules</p>
                     <p className="font-semibold">
-                      {course._count?.modules || 0}
+                      {course._count?.modules ?? 0}
                     </p>
                   </div>
                 </div>
@@ -127,7 +125,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                   <div>
                     <p className="text-sm text-gray-500">Students</p>
                     <p className="font-semibold">
-                      {course._count?.enrollments || 0}
+                      {course._count?.enrollments ?? 0}
                     </p>
                   </div>
                 </div>
@@ -151,8 +149,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             </div>
           </div>
         </div>
-      </div>
-
+      </div>{" "}
       {/* Course Content Section */}
       <div className="bg-white rounded-lg shadow-sm border">
         <div className="p-6 border-b border-gray-200">
@@ -160,68 +157,40 @@ export default async function CoursePage({ params }: CoursePageProps) {
             <h2 className="text-xl font-semibold text-gray-900">
               Course Content
             </h2>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Module
-            </Button>
+            <Link href={`/instructor/courses/${course.id}/content`}>
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Manage Content
+              </Button>
+            </Link>
           </div>
         </div>
 
         <div className="p-6">
           {course.modules && course.modules.length > 0 ? (
             <div className="space-y-4">
-              {course.modules.map((module, index) => (
-                <div
-                  key={module.id}
-                  className="border border-gray-200 rounded-lg p-4"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-gray-900">
-                      Module {index + 1}: {module.title}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500">
-                        {module.lessons?.length || 0} lessons
-                      </span>
-                      <Button variant="ghost" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
+              <div className="text-center">
+                <div className="max-w-md mx-auto">
+                  <div className="mb-4">
+                    <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
+                      <BookOpen className="h-8 w-8 text-gray-400" />
                     </div>
                   </div>
-                  {module.description && (
-                    <p className="text-sm text-gray-600 mb-3">
-                      {module.description}
-                    </p>
-                  )}
-
-                  {/* Lessons */}
-                  {module.lessons && module.lessons.length > 0 && (
-                    <div className="space-y-2 ml-4">
-                      {module.lessons.map((lesson, lessonIndex) => (
-                        <div
-                          key={lesson.id}
-                          className="flex items-center justify-between p-2 bg-gray-50 rounded"
-                        >
-                          <div className="flex items-center">
-                            <span className="text-sm text-gray-500 mr-3">
-                              {lessonIndex + 1}.
-                            </span>
-                            <span className="text-sm font-medium">
-                              {lesson.title}
-                            </span>
-                            <span className="text-xs text-gray-500 ml-2 px-2 py-1 bg-gray-200 rounded">
-                              {lesson.contentType}
-                            </span>
-                          </div>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    {course.modules.length} Module
+                    {course.modules.length > 1 ? "s" : ""} Created
+                  </h3>
+                  <p className="text-gray-500 mb-4">
+                    Manage your course modules and lessons.
+                  </p>
+                  <Link href={`/instructor/courses/${course.id}/content`}>
+                    <Button>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Manage Course Content
+                    </Button>
+                  </Link>
                 </div>
-              ))}
+              </div>
             </div>
           ) : (
             <div className="text-center py-12">
@@ -237,21 +206,22 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 <p className="text-gray-500 mb-4">
                   Start building your course by adding modules and lessons.
                 </p>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Your First Module
-                </Button>
+                <Link href={`/instructor/courses/${course.id}/content`}>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Your First Module
+                  </Button>
+                </Link>
               </div>
             </div>
           )}
         </div>
       </div>
-
       {/* Students Section */}
       <div className="bg-white rounded-lg shadow-sm border">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            Enrolled Students ({course._count?.enrollments || 0})
+            Enrolled Students ({course._count?.enrollments ?? 0})
           </h2>
         </div>
 

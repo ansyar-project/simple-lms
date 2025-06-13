@@ -121,7 +121,9 @@ export function CoursesList({ searchParams }: CoursesListProps) {
     filters.sortBy,
     filters.sortOrder,
     searchParams.page,
-  ]); // Update URL with search params
+  ]);
+
+  // Update URL with search params
   const updateSearchParams = (
     newQuery?: string,
     newFilters?: typeof filters
@@ -132,9 +134,9 @@ export function CoursesList({ searchParams }: CoursesListProps) {
     if (newFilters?.categoryId) params.set("categoryId", newFilters.categoryId);
     if (newFilters?.status) params.set("status", newFilters.status);
     if (newFilters?.sortBy !== "createdAt")
-      params.set("sortBy", newFilters.sortBy);
+      params.set("sortBy", newFilters?.sortBy ?? "createdAt");
     if (newFilters?.sortOrder !== "desc")
-      params.set("sortOrder", newFilters.sortOrder);
+      params.set("sortOrder", newFilters?.sortOrder ?? "desc");
 
     router.push(`/instructor/courses?${params.toString()}`);
   };

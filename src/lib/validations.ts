@@ -60,6 +60,17 @@ export const updateLessonSchema = createLessonSchema.partial().extend({
   id: z.string().min(1, "Lesson ID is required"),
 });
 
+// Reordering schemas
+export const reorderModulesSchema = z.object({
+  courseId: z.string().min(1, "Course ID is required"),
+  moduleIds: z.array(z.string()).min(1, "At least one module is required"),
+});
+
+export const reorderLessonsSchema = z.object({
+  moduleId: z.string().min(1, "Module ID is required"),
+  lessonIds: z.array(z.string()).min(1, "At least one lesson is required"),
+});
+
 // File upload validation
 export const fileUploadSchema = z.object({
   file: z.instanceof(File),
@@ -90,5 +101,7 @@ export type CreateModuleInput = z.infer<typeof createModuleSchema>;
 export type UpdateModuleInput = z.infer<typeof updateModuleSchema>;
 export type CreateLessonInput = z.infer<typeof createLessonSchema>;
 export type UpdateLessonInput = z.infer<typeof updateLessonSchema>;
+export type ReorderModulesInput = z.infer<typeof reorderModulesSchema>;
+export type ReorderLessonsInput = z.infer<typeof reorderLessonsSchema>;
 export type CourseSearchInput = z.infer<typeof courseSearchSchema>;
 export type FileUploadInput = z.infer<typeof fileUploadSchema>;
