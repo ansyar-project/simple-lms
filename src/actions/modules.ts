@@ -117,10 +117,8 @@ export async function updateModule(
       };
     }
 
-    const { id, ...updateData } = validatedFields.data;
-
-    // Verify user owns the module through course
-    const module = await db.module.findFirst({
+    const { id, ...updateData } = validatedFields.data; // Verify user owns the module through course
+    const moduleData = await db.module.findFirst({
       where: {
         id,
         course: {
@@ -132,7 +130,7 @@ export async function updateModule(
       },
     });
 
-    if (!module) {
+    if (!moduleData) {
       return {
         success: false,
         message: "Module not found or you don't have permission to modify it",
@@ -145,7 +143,7 @@ export async function updateModule(
       data: updateData,
     });
 
-    revalidatePath(`/instructor/courses/${module.courseId}`);
+    revalidatePath(`/instructor/courses/${moduleData.courseId}`);
 
     return {
       success: true,

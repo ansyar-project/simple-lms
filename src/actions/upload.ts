@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { authorize } from "@/lib/authorization";
 import { uploadFile, BUCKETS } from "@/lib/minio";
 import type { FileUploadResult } from "@/types/course";

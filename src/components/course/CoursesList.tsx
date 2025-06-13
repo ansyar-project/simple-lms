@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "./CourseCard";
@@ -287,9 +288,11 @@ export function CoursesList({ searchParams }: CoursesListProps) {
               searchParams.status
                 ? "Try adjusting your search criteria or filters."
                 : "You haven't created any courses yet."}
-            </p>
+            </p>{" "}
             <Button asChild>
-              <a href="/instructor/courses/new">Create Your First Course</a>
+              <Link href="/instructor/courses/new">
+                Create Your First Course
+              </Link>
             </Button>
           </div>
         </div>

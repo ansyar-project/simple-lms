@@ -275,9 +275,9 @@ export default async function CoursePage({
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   No students enrolled yet
-                </h3>
+                </h3>{" "}
                 <p className="text-gray-500">
-                  When students enroll in your course, they'll appear here.
+                  When students enroll in your course, they&apos;ll appear here.
                 </p>
               </div>
             </div>

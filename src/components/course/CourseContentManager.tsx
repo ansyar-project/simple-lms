@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,7 +70,8 @@ export default function CourseContentManager({
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const loadModules = async () => {
+
+  const loadModules = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await getCourseModules(courseId);
@@ -89,11 +90,10 @@ export default function CourseContentManager({
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }, [courseId]);
   useEffect(() => {
     loadModules();
-  }, [courseId]);
+  }, [courseId, loadModules]);
 
   const handleCreateModule = () => {
     setSelectedModule(null);

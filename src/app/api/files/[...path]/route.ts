@@ -13,18 +13,16 @@ export async function GET(
     }
 
     const [bucketName, ...filePathParts] = path;
-    const fileName = filePathParts.join("/");
-
-    // Validate bucket name to prevent unauthorized access
-    const validBuckets = Object.values(BUCKETS);
-    if (!validBuckets.includes(bucketName as any)) {
+    const fileName = filePathParts.join("/"); // Validate bucket name to prevent unauthorized access
+    const validBuckets = Object.values(BUCKETS) as string[];
+    if (!validBuckets.includes(bucketName)) {
       return new NextResponse("Invalid bucket", { status: 400 });
     }
 
     // Check if file exists
     try {
       await minioClient.statObject(bucketName, fileName);
-    } catch (error) {
+    } catch {
       return new NextResponse("File not found", { status: 404 });
     }
 

@@ -1,8 +1,6 @@
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { PerformanceMonitor } from "@/lib/performance";
 import { db } from "@/lib/db";
 import { authorize } from "@/lib/authorization";
@@ -11,8 +9,6 @@ import {
   updateCourseSchema,
   courseStatusSchema,
   courseSearchSchema,
-  type CreateCourseInput,
-  type UpdateCourseInput,
   type CourseSearchInput,
 } from "@/lib/validations";
 import type {
@@ -67,17 +63,15 @@ export async function createCourse(
     while (await db.course.findUnique({ where: { slug } })) {
       slug = `${baseSlug}-${counter}`;
       counter++;
-    }
-
-    // Create course
-    const course = await db.course.create({
+    } // Create course
+    await db.course.create({
       data: {
         title,
         description,
         slug,
         instructorId: user.id,
         categoryId,
-        price: price ? price : null,
+        price: price ?? null,
         thumbnail,
         status: "DRAFT",
       },
@@ -159,7 +153,7 @@ export async function updateCourse(
         },
       };
     } // Update slug if title changed
-    let updateDataWithSlug: any = { ...updateData };
+    const updateDataWithSlug: Record<string, unknown> = { ...updateData };
     if (updateData.title) {
       const newSlug = generateSlug(updateData.title);
       const existingSlugCourse = await db.course.findFirst({
@@ -326,10 +320,8 @@ export async function getInstructorCourses(
     const { query, categoryId, status, sortBy, sortOrder, page, limit } =
       validatedParams;
 
-    const skip = (page - 1) * limit;
-
-    // Build where clause
-    const where: any = {};
+    const skip = (page - 1) * limit; // Build where clause
+    const where: Record<string, unknown> = {};
 
     // Instructors can only see their own courses (unless admin)
     if (user.role === "INSTRUCTOR") {
@@ -468,10 +460,8 @@ export async function getInstructorCoursesOptimized(
       return cached.data;
     }
 
-    const skip = (page - 1) * limit;
-
-    // Build optimized where clause
-    const where: any = {};
+    const skip = (page - 1) * limit; // Build optimized where clause
+    const where: Record<string, unknown> = {};
 
     // Instructors can only see their own courses (unless admin)
     if (user.role === "INSTRUCTOR") {
