@@ -9,6 +9,16 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  // Redirect students to their specific dashboard
+  if (session.user.role === "STUDENT") {
+    redirect("/student/dashboard");
+  }
+
+  // Redirect instructors to their specific dashboard
+  if (session.user.role === "INSTRUCTOR") {
+    redirect("/instructor");
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">

@@ -11,7 +11,6 @@
 - Follow the DRY (Don't Repeat Yourself) principle to avoid code duplication.
 - Always ask for clarification if the requirements are not clear.
 - Always provide plan before writing code, especially for complex features or components.
-- Always start coding after the plan is approved.
 - Always write tests for new features and components.
 - Always use TypeScript for type safety and better developer experience.
 - Always use server-side rendering (SSR) for better SEO and performance.
@@ -25,6 +24,13 @@
 - Enable captcha for register and login forms to prevent spam and abuse.
 - Always make sure the code pass pnpm lint and pnpm test after writing new code or making changes.
 - Always use pnpm for package management to ensure consistency across development environments.
+- Always check for existing components or utilities before creating new ones to avoid duplication.
+- Always check for existing tests before writing new ones to avoid duplication.
+- Always check for existing documentation before writing new ones to avoid duplication.
+- Always check for database schema changes before writing new features that depend on the database.
+- Always start coding after the plan is approved.
+- Always write tests for new features and components.
+
 
 ## Coding Standards
 
