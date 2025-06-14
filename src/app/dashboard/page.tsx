@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -16,23 +17,34 @@ export default async function DashboardPage() {
             Welcome back, {session.user.name}!
           </h1>
           <p className="text-gray-600 mt-2">Role: {session.user.role}</p>
-        </div>
-
+        </div>{" "}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Quick Stats</h2>
-            <p className="text-gray-600">Your learning dashboard is ready!</p>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Stats</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">Your learning dashboard is ready!</p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-            <p className="text-gray-600">No recent activity yet.</p>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">No recent activity yet.</p>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-            <p className="text-gray-600">Start your learning journey!</p>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">Start your learning journey!</p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

@@ -2,16 +2,9 @@ import React, { useActionState } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LessonForm from "../LessonForm";
-import { createLesson, updateLesson } from "@/actions/lessons";
 
 // Mock the server actions
 jest.mock("@/actions/lessons");
-const mockCreateLesson = createLesson as jest.MockedFunction<
-  typeof createLesson
->;
-const mockUpdateLesson = updateLesson as jest.MockedFunction<
-  typeof updateLesson
->;
 
 // Mock useActionState with proper state management
 jest.mock("react", () => ({

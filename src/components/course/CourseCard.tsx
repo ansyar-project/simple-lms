@@ -4,6 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { updateCourseStatus, deleteCourse } from "@/actions/courses";
 import type { CourseWithDetails } from "@/types/course";
 import {
@@ -23,8 +30,7 @@ interface CourseCardProps {
   course: CourseWithDetails;
 }
 
-export function CourseCard({ course }: CourseCardProps) {
-  const [showActions, setShowActions] = useState(false);
+export function CourseCard({ course }: Readonly<CourseCardProps>) {
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Handle status update
@@ -44,7 +50,6 @@ export function CourseCard({ course }: CourseCardProps) {
       console.error("Error updating status:", error);
     } finally {
       setIsUpdating(false);
-      setShowActions(false);
     }
   };
 
@@ -72,7 +77,6 @@ export function CourseCard({ course }: CourseCardProps) {
       console.error("Error deleting course:", error);
     } finally {
       setIsUpdating(false);
-      setShowActions(false);
     }
   };
 
@@ -92,7 +96,6 @@ export function CourseCard({ course }: CourseCardProps) {
             <BookOpen className="h-12 w-12 text-gray-400" />
           </div>
         )}
-
         {/* Status Badge */}
         <div className="absolute top-3 left-3">
           <span
@@ -106,99 +109,94 @@ export function CourseCard({ course }: CourseCardProps) {
           >
             {course.status}
           </span>
-        </div>
-
+        </div>{" "}
         {/* Actions Menu */}
         <div className="absolute top-3 right-3">
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowActions(!showActions)}
-              className="bg-white/90 hover:bg-white"
-              disabled={isUpdating}
-            >
-              <MoreVertical className="h-4 w-4" />
-            </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-white/90 hover:bg-white"
+                disabled={isUpdating}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/instructor/courses/${course.id}`}
+                  className="flex items-center"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
+                </Link>
+              </DropdownMenuItem>
 
-            {showActions && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-10">
-                <div className="py-1">
-                  <Link
-                    href={`/instructor/courses/${course.id}`}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Eye className="h-4 w-4 mr-2" />
-                    View Details
-                  </Link>
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/instructor/courses/${course.id}/edit`}
+                  className="flex items-center"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Course
+                </Link>
+              </DropdownMenuItem>
 
-                  <Link
-                    href={`/instructor/courses/${course.id}/edit`}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit Course
-                  </Link>
+              <DropdownMenuSeparator />
 
-                  <div className="border-t border-gray-100" />
+              {course.status === "DRAFT" && (
+                <DropdownMenuItem
+                  onClick={() => handleStatusUpdate("PUBLISHED")}
+                  disabled={isUpdating}
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  Publish Course
+                </DropdownMenuItem>
+              )}
 
-                  {course.status === "DRAFT" && (
-                    <button
-                      onClick={() => handleStatusUpdate("PUBLISHED")}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      disabled={isUpdating}
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      Publish Course
-                    </button>
-                  )}
-
-                  {course.status === "PUBLISHED" && (
-                    <>
-                      <button
-                        onClick={() => handleStatusUpdate("DRAFT")}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        disabled={isUpdating}
-                      >
-                        <Pause className="h-4 w-4 mr-2" />
-                        Unpublish
-                      </button>
-                      <button
-                        onClick={() => handleStatusUpdate("ARCHIVED")}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        disabled={isUpdating}
-                      >
-                        <Archive className="h-4 w-4 mr-2" />
-                        Archive
-                      </button>
-                    </>
-                  )}
-
-                  {course.status === "ARCHIVED" && (
-                    <button
-                      onClick={() => handleStatusUpdate("DRAFT")}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      disabled={isUpdating}
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Restore to Draft
-                    </button>
-                  )}
-
-                  <div className="border-t border-gray-100" />
-
-                  <button
-                    onClick={handleDelete}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              {course.status === "PUBLISHED" && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => handleStatusUpdate("DRAFT")}
                     disabled={isUpdating}
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Course
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+                    <Pause className="h-4 w-4 mr-2" />
+                    Unpublish
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleStatusUpdate("ARCHIVED")}
+                    disabled={isUpdating}
+                  >
+                    <Archive className="h-4 w-4 mr-2" />
+                    Archive
+                  </DropdownMenuItem>
+                </>
+              )}
+
+              {course.status === "ARCHIVED" && (
+                <DropdownMenuItem
+                  onClick={() => handleStatusUpdate("DRAFT")}
+                  disabled={isUpdating}
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Restore to Draft
+                </DropdownMenuItem>
+              )}
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                onClick={handleDelete}
+                disabled={isUpdating}
+                className="text-red-600 focus:text-red-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Course
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -250,19 +248,11 @@ export function CourseCard({ course }: CourseCardProps) {
             <Link href={`/courses/${course.slug}`} className="flex-1">
               <Button variant="ghost" size="sm" className="w-full">
                 Preview
-              </Button>
+              </Button>{" "}
             </Link>
           </div>
         </div>
       </div>
-
-      {/* Click outside to close actions menu */}
-      {showActions && (
-        <div
-          className="fixed inset-0 z-0"
-          onClick={() => setShowActions(false)}
-        />
-      )}
     </div>
   );
 }

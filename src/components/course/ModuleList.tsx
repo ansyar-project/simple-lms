@@ -21,6 +21,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { reorderModules, deleteModule } from "@/actions/modules";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 import {
   GripVertical,
   Edit,
@@ -71,6 +72,7 @@ function SortableModule({
   onCreateLesson,
   onEditLesson,
 }: Readonly<SortableModuleProps>) {
+  const { toast } = useToast();
   const {
     attributes,
     listeners,
@@ -101,12 +103,24 @@ function SortableModule({
       const result = await deleteModule(module.id);
       if (result.success) {
         onDelete(module.id);
+        toast({
+          title: "Success",
+          description: "Module deleted successfully",
+        });
       } else {
-        alert(result.message ?? "Failed to delete module");
+        toast({
+          title: "Error",
+          description: result.message ?? "Failed to delete module",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Error deleting module:", error);
-      alert("Failed to delete module");
+      toast({
+        title: "Error",
+        description: "Failed to delete module",
+        variant: "destructive",
+      });
     } finally {
       setIsDeleting(false);
     }
@@ -253,6 +267,7 @@ export default function ModuleList({
   onEditLesson,
   onRefresh,
 }: Readonly<ModuleListProps>) {
+  const { toast } = useToast();
   const [items, setItems] = useState(modules);
   const [isReordering, setIsReordering] = useState(false);
 
@@ -282,14 +297,22 @@ export default function ModuleList({
         if (!result.success) {
           // Revert on failure
           setItems([...items]);
-          alert(result.message ?? "Failed to reorder modules");
+          toast({
+            title: "Error",
+            description: result.message ?? "Failed to reorder modules",
+            variant: "destructive",
+          });
         } else {
           onRefresh();
         }
       } catch (error) {
         console.error("Error reordering modules:", error);
         setItems([...items]);
-        alert("Failed to reorder modules");
+        toast({
+          title: "Error",
+          description: "Failed to reorder modules",
+          variant: "destructive",
+        });
       } finally {
         setIsReordering(false);
       }

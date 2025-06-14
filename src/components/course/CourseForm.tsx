@@ -5,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createCourse, updateCourse } from "@/actions/courses";
 import { uploadCourseThumbnail } from "@/actions/upload";
 import type { CourseFormState } from "@/types/course";
@@ -83,10 +90,8 @@ export function CourseForm({
       {mode === "edit" && initialData?.id && (
         <input type="hidden" name="id" value={initialData.id} />
       )}
-
       {/* Thumbnail input (hidden) */}
       {thumbnail && <input type="hidden" name="thumbnail" value={thumbnail} />}
-
       {/* Course Title */}
       <div className="space-y-2">
         <Label htmlFor="title">Course Title *</Label>
@@ -102,7 +107,6 @@ export function CourseForm({
           <p className="text-sm text-red-600">{state.errors.title[0]}</p>
         )}
       </div>
-
       {/* Course Description */}
       <div className="space-y-2">
         <Label htmlFor="description">Course Description *</Label>
@@ -117,31 +121,28 @@ export function CourseForm({
         {state.errors?.description && (
           <p className="text-sm text-red-600">{state.errors.description[0]}</p>
         )}
-      </div>
-
+      </div>{" "}
       {/* Category */}
       <div className="space-y-2">
         <Label htmlFor="categoryId">Category *</Label>
-        <select
-          id="categoryId"
-          name="categoryId"
-          defaultValue={initialData?.categoryId}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            state.errors?.categoryId ? "border-red-500" : "border-gray-300"
-          }`}
-        >
-          <option value="">Select a category</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+        <Select name="categoryId" defaultValue={initialData?.categoryId || ""}>
+          <SelectTrigger
+            className={state.errors?.categoryId ? "border-red-500" : ""}
+          >
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {state.errors?.categoryId && (
           <p className="text-sm text-red-600">{state.errors.categoryId[0]}</p>
         )}
       </div>
-
       {/* Course Thumbnail */}
       <div className="space-y-2">
         <Label>Course Thumbnail</Label>
@@ -205,7 +206,6 @@ export function CourseForm({
           <p className="text-sm text-red-600">{state.errors.thumbnail[0]}</p>
         )}
       </div>
-
       {/* Course Price */}
       <div className="space-y-2">
         <Label htmlFor="price">Course Price (USD)</Label>
@@ -224,20 +224,17 @@ export function CourseForm({
           <p className="text-sm text-red-600">{state.errors.price[0]}</p>
         )}
       </div>
-
       {/* Form Messages */}
       {state.errors?._form && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-md">
           <p className="text-sm text-red-600">{state.errors._form[0]}</p>
         </div>
       )}
-
       {state.success && state.message && (
         <div className="p-4 bg-green-50 border border-green-200 rounded-md">
           <p className="text-sm text-green-600">{state.message}</p>
         </div>
       )}
-
       {/* Submit Button */}
       <div className="flex justify-end space-x-4">
         <Button type="submit" disabled={isUploadingThumbnail}>

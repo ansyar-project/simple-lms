@@ -13,6 +13,14 @@ const mockDeleteModule = deleteModule as jest.MockedFunction<
   typeof deleteModule
 >;
 
+// Mock the useToast hook
+const mockToast = jest.fn();
+jest.mock("@/hooks/use-toast", () => ({
+  useToast: () => ({
+    toast: mockToast,
+  }),
+}));
+
 describe("ModuleList", () => {
   const mockOnEditModule = jest.fn();
   const mockOnCreateLesson = jest.fn();
@@ -69,9 +77,9 @@ describe("ModuleList", () => {
     onEditLesson: mockOnEditLesson,
     onRefresh: mockOnRefresh,
   };
-
   beforeEach(() => {
     jest.clearAllMocks();
+    mockToast.mockClear();
   });
 
   describe("Rendering", () => {
@@ -224,11 +232,9 @@ describe("ModuleList", () => {
     it("should handle deletion errors gracefully", async () => {
       const user = userEvent.setup();
 
-      // Mock window.confirm to return true and window.alert
+      // Mock window.confirm to return true
       const originalConfirm = window.confirm;
-      const originalAlert = window.alert;
       window.confirm = jest.fn().mockReturnValue(true);
-      window.alert = jest.fn();
 
       // Mock failed deletion
       mockDeleteModule.mockResolvedValue({
@@ -236,7 +242,9 @@ describe("ModuleList", () => {
         message: "Failed to delete module",
       });
 
-      render(<ModuleList {...defaultProps} />); // Find delete buttons by their SVG content
+      render(<ModuleList {...defaultProps} />);
+
+      // Find delete buttons by their SVG content
       const deleteButtons = document.querySelectorAll(
         'button svg[class*="lucide-trash"]'
       );
@@ -249,13 +257,16 @@ describe("ModuleList", () => {
 
       await waitFor(() => {
         expect(mockDeleteModule).toHaveBeenCalled();
-        // Should show alert with error message
-        expect(window.alert).toHaveBeenCalledWith("Failed to delete module");
+        // Should show toast with error message
+        expect(mockToast).toHaveBeenCalledWith({
+          title: "Error",
+          description: "Failed to delete module",
+          variant: "destructive",
+        });
       });
 
       // Restore original functions
       window.confirm = originalConfirm;
-      window.alert = originalAlert;
     });
   });
 
@@ -326,15 +337,15 @@ describe("ModuleList", () => {
 
       // Mock window.confirm to return true
       const originalConfirm = window.confirm;
-      window.confirm = jest.fn().mockReturnValue(true);
-
-      // Create a promise that we can control
-      let resolveDelete: (value: any) => void;
+      window.confirm = jest.fn().mockReturnValue(true); // Create a promise that we can control
+      let resolveDelete: (value: unknown) => void;
       const deletePromise = new Promise((resolve) => {
         resolveDelete = resolve;
       });
 
-      mockDeleteModule.mockReturnValue(deletePromise as any);
+      mockDeleteModule.mockReturnValue(
+        deletePromise as Promise<{ success: boolean; error?: string }>
+      );
 
       render(<ModuleList {...defaultProps} />);
 

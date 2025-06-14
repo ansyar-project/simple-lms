@@ -17,6 +17,14 @@
 - Always use server-side rendering (SSR) for better SEO and performance.
 - Always use server actions for data fetching.
 - Always use the latest version of Next.js and React.
+- Always update the system design document for any significant changes to the architecture or design of the application.
+- Always update the milestones document for when achieving a new milestone or completing a significant feature.
+- Always update the system design document for when refactoring or improving the codebase.
+- Limit code changing to the minimum necessary to achieve the task at hand. Avoid unnecessary refactoring or changes that do not directly contribute to the feature being implemented.
+- Rate limit all API calls to prevent abuse and ensure fair usage.
+- Enable captcha for register and login forms to prevent spam and abuse.
+- Always make sure the code pass pnpm lint and pnpm test after writing new code or making changes.
+- Always use pnpm for package management to ensure consistency across development environments.
 
 ## Coding Standards
 

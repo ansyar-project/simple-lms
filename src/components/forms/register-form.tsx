@@ -6,6 +6,13 @@ import { register, type RegisterState } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Link from "next/link";
 
 function SubmitButton() {
@@ -45,7 +52,6 @@ export default function RegisterForm() {
             <p className="text-sm text-red-500">{state.errors.name[0]}</p>
           )}
         </div>
-
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -59,7 +65,6 @@ export default function RegisterForm() {
             <p className="text-sm text-red-500">{state.errors.email[0]}</p>
           )}
         </div>
-
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input id="password" name="password" type="password" required />
@@ -67,7 +72,6 @@ export default function RegisterForm() {
             <p className="text-sm text-red-500">{state.errors.password[0]}</p>
           )}
         </div>
-
         <div className="space-y-2">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
           <Input
@@ -81,32 +85,28 @@ export default function RegisterForm() {
               {state.errors.confirmPassword[0]}
             </p>
           )}
-        </div>
-
+        </div>{" "}
         <div className="space-y-2">
           <Label htmlFor="role">I want to:</Label>
-          <select
-            id="role"
-            name="role"
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            defaultValue="STUDENT"
-          >
-            <option value="STUDENT">Learn (Student)</option>
-            <option value="INSTRUCTOR">Teach (Instructor)</option>
-          </select>
+          <Select name="role" defaultValue="STUDENT">
+            <SelectTrigger>
+              <SelectValue placeholder="Select your role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="STUDENT">Learn (Student)</SelectItem>
+              <SelectItem value="INSTRUCTOR">Teach (Instructor)</SelectItem>
+            </SelectContent>
+          </Select>
           {state.errors?.role && (
             <p className="text-sm text-red-500">{state.errors.role[0]}</p>
           )}
         </div>
-
         {state.errors?._form && (
           <p className="text-sm text-red-500">{state.errors._form[0]}</p>
         )}
-
         {state.message && !state.errors?._form && (
           <p className="text-sm text-green-500">{state.message}</p>
         )}
-
         <SubmitButton />
       </form>
 

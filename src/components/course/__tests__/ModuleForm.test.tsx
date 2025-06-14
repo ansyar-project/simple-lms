@@ -3,15 +3,12 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useFormState } from "react-dom";
 import ModuleForm from "../ModuleForm";
-import { createModule, updateModule } from "@/actions/modules";
+import { createModule } from "@/actions/modules";
 
 // Mock the server actions
 jest.mock("@/actions/modules");
 const mockCreateModule = createModule as jest.MockedFunction<
   typeof createModule
->;
-const mockUpdateModule = updateModule as jest.MockedFunction<
-  typeof updateModule
 >;
 
 // Mock useFormState
@@ -249,16 +246,21 @@ describe("ModuleForm", () => {
       // The form action should have been called
       expect(mockFormAction).toHaveBeenCalled();
     });
-
     it("should show loading state in submit button", async () => {
       const user = userEvent.setup();
 
-      let resolveCreateModule: (value: any) => void;
+      let resolveCreateModule: (value: unknown) => void;
       const createModulePromise = new Promise((resolve) => {
         resolveCreateModule = resolve;
       });
 
-      mockCreateModule.mockReturnValue(createModulePromise as any);
+      mockCreateModule.mockReturnValue(
+        createModulePromise as Promise<{
+          success: boolean;
+          error?: string;
+          data?: unknown;
+        }>
+      );
 
       render(<ModuleForm {...defaultProps} />);
 

@@ -5,6 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CourseCard } from "./CourseCard";
 import { CourseListSkeleton } from "./CourseListSkeleton";
 import {
@@ -196,52 +203,64 @@ export function CoursesList({ searchParams }: CoursesListProps) {
               className="pl-10"
             />
           </div>
-          {/* Filters Row */}
+          {/* Filters Row */}{" "}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Category Filter */}
             <div>
-              <select
+              <Select
                 value={filters.categoryId}
-                onChange={(e) =>
-                  handleFilterChange("categoryId", e.target.value)
+                onValueChange={(value) =>
+                  handleFilterChange("categoryId", value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Status Filter */}
             <div>
-              <select
+              <Select
                 value={filters.status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onValueChange={(value) => handleFilterChange("status", value)}
               >
-                <option value="">All Status</option>
-                <option value="DRAFT">Draft</option>
-                <option value="PUBLISHED">Published</option>
-                <option value="ARCHIVED">Archived</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="DRAFT">Draft</SelectItem>
+                  <SelectItem value="PUBLISHED">Published</SelectItem>
+                  <SelectItem value="ARCHIVED">Archived</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Sort By */}
             <div>
-              <select
+              <Select
                 value={filters.sortBy}
-                onChange={(e) => handleFilterChange("sortBy", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onValueChange={(value) => handleFilterChange("sortBy", value)}
               >
-                <option value="createdAt">Created Date</option>
-                <option value="title">Title</option>
-                <option value="updatedAt">Updated Date</option>
-                <option value="price">Price</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sort By" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="createdAt">Created Date</SelectItem>
+                  <SelectItem value="title">Title</SelectItem>
+                  <SelectItem value="updatedAt">Updated Date</SelectItem>
+                  <SelectItem value="price">Price</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Sort Order */}
