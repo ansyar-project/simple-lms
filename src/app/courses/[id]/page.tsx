@@ -30,7 +30,7 @@ interface CourseDetailsPageProps {
 
 export default async function CourseDetailsPage({
   params,
-}: CourseDetailsPageProps) {
+}: Readonly<CourseDetailsPageProps>) {
   const session = await auth();
   const course = await db.course.findUnique({
     where: { id: params.id, status: "PUBLISHED" },

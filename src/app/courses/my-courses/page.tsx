@@ -67,7 +67,7 @@ export default async function MyCourses() {
                   total +
                   module.lessons.reduce(
                     (moduleTotal, lesson) =>
-                      moduleTotal + (lesson.duration || 0),
+                      moduleTotal + (lesson.duration ?? 0),
                     0
                   ),
                 0

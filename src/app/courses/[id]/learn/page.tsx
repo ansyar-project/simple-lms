@@ -5,14 +5,16 @@ import { requireCourseAccess } from "@/lib/authorization";
 import { CourseLearningInterface } from "@/components/course/CourseLearningInterface";
 
 interface CourseLearnPageProps {
-  params: { id: string };
-  searchParams: { lesson?: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ lesson?: string }>;
 }
 
 export default async function CourseLearnPage({
   params,
   searchParams,
-}: CourseLearnPageProps) {
+}: Readonly<CourseLearnPageProps>) {
+    const awaitedParams = await params;
+    const awaitedSearchParams = await searchParams;
   const session = await auth();
 
   if (!session?.user) {
@@ -21,10 +23,10 @@ export default async function CourseLearnPage({
 
   try {
     // Check if user has access to this course
-    await requireCourseAccess(session.user.id, params.id);
+    await requireCourseAccess(session.user.id, awaitedParams.id);
 
     // Get course progress and content
-    const courseData = await getCourseProgress(params.id);
+    const courseData = await getCourseProgress(awaitedParams.id);
 
     if (!courseData) {
       notFound();
@@ -33,7 +35,7 @@ export default async function CourseLearnPage({
     return (
       <CourseLearningInterface
         courseData={courseData}
-        currentLessonId={searchParams.lesson}
+        currentLessonId={awaitedSearchParams.lesson}
         userId={session.user.id}
       />
     );
@@ -41,7 +43,7 @@ export default async function CourseLearnPage({
     console.error("Course access error:", error);
 
     if (error instanceof Error && error.message.includes("Not enrolled")) {
-      redirect(`/courses/${params.id}`);
+      redirect(`/courses/${awaitedParams.id}`);
     }
 
     redirect("/courses");

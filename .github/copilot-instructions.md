@@ -1,77 +1,122 @@
 # Copilot Instructions
-# This file contains instructions for Copilot to follow when generating code.
-# It is important to follow these instructions to ensure consistency and quality in the codebase.
+*Instructions for generating consistent, high-quality code that follows project standards and best practices.*
 
-# General Guidelines
-- Follow the project's coding standards and best practices.
-- Write clean, readable, and maintainable code.
-- Use meaningful variable and function names.
-- Write comments to explain complex logic or important decisions.
-- Always ensure that the code is well-documented, easy to read, and maintainable. Follow best practices for code organization and structure to facilitate collaboration and future development.
-- Follow the DRY (Don't Repeat Yourself) principle to avoid code duplication.
-- Always ask for clarification if the requirements are not clear.
-- Always provide plan before writing code, especially for complex features or components.
-- Always write tests for new features and components.
-- Always use TypeScript for type safety and better developer experience.
-- Always use server-side rendering (SSR) for better SEO and performance.
-- Always use server actions for data fetching.
-- Always use the latest version of Next.js and React.
-- Always update the system design document for any significant changes to the architecture or design of the application.
-- Always update the milestones document for when achieving a new milestone or completing a significant feature.
-- Always update the system design document for when refactoring or improving the codebase.
-- Limit code changing to the minimum necessary to achieve the task at hand. Avoid unnecessary refactoring or changes that do not directly contribute to the feature being implemented.
-- Rate limit all API calls to prevent abuse and ensure fair usage.
-- Enable captcha for register and login forms to prevent spam and abuse.
-- Always make sure the code pass pnpm lint and pnpm test after writing new code or making changes.
-- Always use pnpm for package management to ensure consistency across development environments.
-- Always check for existing components or utilities before creating new ones to avoid duplication.
-- Always check for existing tests before writing new ones to avoid duplication.
-- Always check for existing documentation before writing new ones to avoid duplication.
-- Always check for database schema changes before writing new features that depend on the database.
-- Always start coding after the plan is approved.
-- Always write tests for new features and components.
+## Core Workflow Principles
+- **Always provide a plan before writing code**, especially for complex features or components
+- **Always ask for clarification** if requirements are unclear or ambiguous
+- **Always start coding only after the plan is approved**
+- **Limit code changes to the minimum necessary** to achieve the task - avoid unnecessary refactoring
+- **Check for existing components, utilities, tests, and documentation** before creating new ones to avoid duplication
+- **Consider project context** - ask about current project structure and existing patterns before suggesting new approaches
+- **When modifying existing code**, maintain consistency with current codebase style and patterns
 
+## Code Quality Standards
 
-## Coding Standards
+### Language & Framework Requirements
+- **Always use TypeScript** for type safety and better developer experience
+- **Always use the latest version of Next.js and React**
+- **Always use server-side rendering (SSR)** for better SEO and performance
+- **Always use server actions** for data fetching
+- **Follow the DRY principle** to avoid code duplication
 
-- Use camelCase for variable and function names.
-- Use PascalCase for component names.
-- Use single quotes for strings.
-- Use 2 spaces for indentation.
-- Use arrow functions for callbacks.
-- Use async/await for asynchronous code.
-- Use const for constants and let for variables that will be reassigned.
-- Use destructuring for objects and arrays.
-- Use template literals for strings that contain variables.
-- Use the latest JavaScript features (ES6+) where possible.
-- Use pnpm for package management.
-- Use ESLint for linting and Prettier for formatting.
-- Use TypeScript for type safety.
-- Use server-side rendering (SSR) for better SEO and performance.
-- Use server actions for data fetching.
-## Code Structure
-- Use a modular structure with separate files for components, utilities, and styles.
-- Use a `components` directory for reusable components.
-- Use a `utils` directory for utility functions.
-- Use a `styles` directory for CSS or styled components.
-- Use a `hooks` directory for custom hooks.
-- Use a `types` directory for TypeScript types and interfaces.
-- Use a `tests` directory for unit and integration tests.
-- Use a `public` directory for static assets like images and fonts.
-- Use a `config` directory for configuration files.
-- Use a `middleware` directory for Next.js middleware functions.
-- Use a `lib` directory for third-party libraries and utilities.
-- Use a `context` directory for React context providers.
+### Coding Style
+- Use camelCase for variable and function names
+- Use PascalCase for component names
+- Use single quotes for strings
+- Use 2 spaces for indentation
+- Use arrow functions for callbacks
+- Use async/await for asynchronous code
+- Use const for constants and let for variables that will be reassigned
+- Use destructuring for objects and arrays
+- Use template literals for strings containing variables
+- Use the latest JavaScript features (ES6+) where possible
 
-## Documentation
-- Use JSDoc comments for functions and classes.
-- Use Markdown for README files and documentation.
-- Use TypeScript interfaces for type definitions.
-- Use Storybook for component documentation and testing.
-- Use system_design for reference architecture and design decisions.
+### Code Structure
+```
+├── components/     # Reusable UI components
+├── utils/         # Utility functions
+├── hooks/         # Custom React hooks
+├── types/         # TypeScript types and interfaces
+├── tests/         # Unit and integration tests
+├── public/        # Static assets (images, fonts)
+├── config/        # Configuration files
+├── middleware/    # Next.js middleware functions
+├── lib/          # Third-party libraries and utilities
+├── context/      # React context providers
+└── styles/       # CSS or styled components
+```
 
-## Testing
-- Write unit tests for all components and utilities.
-- Use Jest for unit testing and React Testing Library for component testing.
-- Use Cypress for end-to-end testing.
-- Use Playwright for cross-browser testing.
+## Security & Performance
+
+### Security Requirements
+- **Validate all user inputs** on both client and server side
+- **Rate limit all API calls** to prevent abuse and ensure fair usage
+- **Enable captcha for register and login forms** to prevent spam and abuse
+- **Use environment variables** for sensitive configuration
+- **Implement proper authentication and authorization checks**
+- **Follow OWASP security best practices**
+
+### Performance Optimization
+- **Consider bundle size impact** when adding new dependencies
+- **Optimize images and assets** for web performance
+- **Use React.memo and useMemo appropriately** to prevent unnecessary re-renders
+- **Implement proper loading states and error boundaries**
+- **Consider long-term maintainability** over quick solutions
+
+### Error Handling
+- **Always implement proper error handling** with try-catch blocks
+- **Use type-safe error handling patterns**
+- **Provide meaningful error messages** for debugging
+- **Log errors appropriately** for monitoring and troubleshooting
+
+## Accessibility & User Experience
+- **Ensure all interactive elements are keyboard accessible**
+- **Use semantic HTML elements appropriately**
+- **Include proper ARIA labels and descriptions**
+- **Test with screen readers and accessibility tools**
+- **Prioritize user experience and performance** in all decisions
+
+## Testing & Quality Assurance
+- **Always write tests for new features and components**
+- **Write unit tests for all components and utilities** using Jest and React Testing Library
+- **Use Cypress for end-to-end testing**
+- **Use Playwright for cross-browser testing**
+- **Ensure code passes `pnpm lint` and `pnpm test`** before completion
+- **Always use pnpm for package management** to ensure consistency
+
+## Documentation & Communication
+- **Use JSDoc comments** for functions and classes
+- **Use Markdown** for README files and documentation
+- **Use TypeScript interfaces** for type definitions
+- **Use Storybook** for component documentation and testing
+- **Update system design document** for significant architectural changes
+- **Update milestones document** when achieving new milestones or completing significant features
+
+### Decision-Making Guidelines
+- **When multiple approaches are possible**, explain trade-offs and recommend the best option
+- **Consider the project's scale and complexity** when making architectural decisions
+- **Provide clear reasoning** for technical decisions and recommendations
+
+## Debugging & Troubleshooting
+- **Provide clear debugging steps** when code issues arise
+- **Include relevant console.log statements** for complex logic during development
+- **Suggest appropriate debugging tools and techniques**
+- **When encountering errors**, provide step-by-step resolution guidance
+
+## Tools & Dependencies
+- **Package Management**: pnpm
+- **Linting & Formatting**: ESLint and Prettier
+- **Testing**: Jest, React Testing Library, Cypress, Playwright
+- **Documentation**: Storybook, JSDoc, Markdown
+- **Type Safety**: TypeScript with strict configuration
+
+## Final Checklist
+Before considering any task complete, ensure:
+- [ ] Code follows all style guidelines
+- [ ] Tests are written and passing
+- [ ] Documentation is updated
+- [ ] Security considerations are addressed
+- [ ] Performance implications are considered
+- [ ] Accessibility requirements are met
+- [ ] Error handling is implemented
+- [ ] Code passes linting and testing
