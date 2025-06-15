@@ -47,10 +47,12 @@ jest.mock("next/navigation", () => ({
 const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
 // Helper function to create FormData
-const createMockFormData = (data: Record<string, string>) => {
+const createMockFormData = (data: Record<string, string | undefined>) => {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) => {
-    formData.append(key, value);
+    if (value !== undefined) {
+      formData.append(key, value);
+    }
   });
   return formData;
 };
@@ -311,20 +313,44 @@ describe("Auth Actions", () => {
         expect.any(Error)
       );
     });
+    it("should handle missing role field with validation error", async () => {
+      // Create FormData without a role field
+      const formData = new FormData();
+      formData.append("name", "John Doe");
+      formData.append("email", "john@example.com");
+      formData.append("password", "password123");
+      formData.append("confirmPassword", "password123");
+      // Explicitly not adding role field
 
-    it("should default role to STUDENT when not provided", async () => {
+      const result = await register({}, formData);
+
+      // The function should return validation error for missing role
+      expect(result).toEqual({
+        errors: {
+          role: ["Expected 'STUDENT' | 'INSTRUCTOR', received null"],
+        },
+        message: "Invalid fields. Failed to register.",
+      });
+    });
+
+    it("should register user with explicit STUDENT role", async () => {
       const formData = createMockFormData({
         name: "John Doe",
         email: "john@example.com",
         password: "password123",
         confirmPassword: "password123",
+        role: "STUDENT",
       });
 
       (db.user.findUnique as jest.Mock).mockResolvedValue(null);
       (bcrypt.hash as jest.Mock).mockResolvedValue("hashedPassword");
       (db.user.create as jest.Mock).mockResolvedValue({});
 
-      await register({}, formData);
+      const result = await register({}, formData);
+
+      expect(result).toEqual({
+        message: "Account created successfully! Please login.",
+      });
 
       expect(db.user.create).toHaveBeenCalledWith({
         data: {

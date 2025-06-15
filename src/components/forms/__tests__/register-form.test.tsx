@@ -16,46 +16,63 @@ jest.mock("react-dom", () => ({
 
 // Mock UI components
 jest.mock("@/components/ui/button", () => ({
-  Button: ({ children, ...props }: any) => (
+  Button: ({ children, ...props }: React.ComponentProps<"button">) => (
     <button {...props}>{children}</button>
   ),
 }));
 
 jest.mock("@/components/ui/input", () => ({
-  Input: (props: any) => <input {...props} />,
+  Input: (props: React.ComponentProps<"input">) => <input {...props} />,
 }));
 
 jest.mock("@/components/ui/label", () => ({
-  Label: ({ children, ...props }: any) => <label {...props}>{children}</label>,
+  Label: ({ children, ...props }: React.ComponentProps<"label">) => (
+    <label {...props}>{children}</label>
+  ),
 }));
 
 jest.mock("@/components/ui/select", () => ({
-  Select: ({ children, onValueChange, defaultValue, name, ...props }: any) => (
+  Select: ({
+    children,
+    onValueChange,
+    defaultValue,
+    name,
+  }: {
+    children: React.ReactNode;
+    onValueChange?: (value: string) => void;
+    defaultValue?: string;
+    name?: string;
+  }) => (
     <div data-testid="select-wrapper">
       <select
         data-testid="select"
         name={name}
         defaultValue={defaultValue}
-        onChange={(e) => onValueChange?.(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+          onValueChange?.(e.target.value)
+        }
         role="combobox"
         aria-label="Select role"
-        {...props}
       >
         {children}
       </select>
     </div>
   ),
-  SelectContent: ({ children, ...props }: any) => <>{children}</>,
-  SelectItem: ({ children, value, ...props }: any) => (
-    <option value={value} {...props}>
-      {children}
-    </option>
+  SelectContent: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
   ),
-  SelectTrigger: ({ children, ...props }: any) => <>{children}</>,
-  SelectValue: ({ placeholder, ...props }: any) => (
-    <option value="" {...props}>
-      {placeholder}
-    </option>
+  SelectItem: ({
+    children,
+    value,
+  }: {
+    children: React.ReactNode;
+    value: string;
+  }) => <option value={value}>{children}</option>,
+  SelectTrigger: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  SelectValue: ({ placeholder }: { placeholder?: string }) => (
+    <option value="">{placeholder}</option>
   ),
 }));
 

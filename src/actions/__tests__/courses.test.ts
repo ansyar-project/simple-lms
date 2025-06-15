@@ -62,13 +62,6 @@ const mockInstructor = {
   email: "instructor@example.com",
 };
 
-const mockAdmin = {
-  id: "admin-1",
-  role: "ADMIN" as const,
-  name: "Admin User",
-  email: "admin@example.com",
-};
-
 describe("Course Actions", () => {
   beforeEach(() => {
     jest.clearAllMocks();

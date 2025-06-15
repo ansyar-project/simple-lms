@@ -34,7 +34,6 @@
 ### Code Structure
 ```
 ├── components/     # Reusable UI components
-├── utils/         # Utility functions
 ├── hooks/         # Custom React hooks
 ├── types/         # TypeScript types and interfaces
 ├── tests/         # Unit and integration tests

@@ -16,17 +16,19 @@ jest.mock("react-dom", () => ({
 
 // Mock UI components
 jest.mock("@/components/ui/button", () => ({
-  Button: ({ children, ...props }: any) => (
+  Button: ({ children, ...props }: React.ComponentProps<"button">) => (
     <button {...props}>{children}</button>
   ),
 }));
 
 jest.mock("@/components/ui/input", () => ({
-  Input: (props: any) => <input {...props} />,
+  Input: (props: React.ComponentProps<"input">) => <input {...props} />,
 }));
 
 jest.mock("@/components/ui/label", () => ({
-  Label: ({ children, ...props }: any) => <label {...props}>{children}</label>,
+  Label: ({ children, ...props }: React.ComponentProps<"label">) => (
+    <label {...props}>{children}</label>
+  ),
 }));
 
 // Mock Next.js components
