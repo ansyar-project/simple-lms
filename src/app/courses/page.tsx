@@ -16,15 +16,18 @@ import Image from "next/image";
 import { CourseEnrollButton } from "@/components/course/CourseEnrollButton";
 import { CourseStatus } from "@prisma/client";
 
+// Force dynamic rendering since we use auth()
+export const dynamic = 'force-dynamic';
+
 interface CoursesCatalogProps {
-  readonly searchParams: { search?: string; category?: string };
+  readonly searchParams: Promise<{ search?: string; category?: string }>;
 }
 
 export default async function CoursesCatalog({
   searchParams,
 }: CoursesCatalogProps) {
   const session = await auth();
-  const { search, category } = searchParams;
+  const { search, category } = await searchParams;
   // Build where clause for filtering
   const whereClause: {
     OR?: Array<{

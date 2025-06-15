@@ -22,6 +22,9 @@ import {
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
+// Force dynamic rendering since we use auth()
+export const dynamic = 'force-dynamic';
+
 export default async function StudentDashboard() {
   const session = await auth();
 

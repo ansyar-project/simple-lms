@@ -24,16 +24,20 @@ import Link from "next/link";
 import { CourseEnrollButton } from "@/components/course/CourseEnrollButton";
 import { formatDistanceToNow } from "date-fns";
 
+// Force dynamic rendering since we use auth()
+export const dynamic = 'force-dynamic';
+
 interface CourseDetailsPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function CourseDetailsPage({
   params,
 }: Readonly<CourseDetailsPageProps>) {
+  const { id } = await params;
   const session = await auth();
   const course = await db.course.findUnique({
-    where: { id: params.id, status: "PUBLISHED" },
+    where: { id, status: "PUBLISHED" },
     include: {
       instructor: {
         select: {
@@ -72,9 +76,8 @@ export default async function CourseDetailsPage({
   if (!course) {
     notFound();
   }
-
   // Get enrollment status
-  const enrollmentStatus = await getEnrollmentStatus(params.id);
+  const enrollmentStatus = await getEnrollmentStatus(id);
 
   // Calculate course stats
   const totalLessons = course.modules.reduce(

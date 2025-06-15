@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { getInstructorDashboard } from "@/actions/courses";
 import { BookOpen, Users, DollarSign, PlusCircle } from "lucide-react";
 
+// Force dynamic rendering since we use auth()
+export const dynamic = 'force-dynamic';
+
 export default async function InstructorDashboardPage() {
   const dashboardData = await getInstructorDashboard();
 
