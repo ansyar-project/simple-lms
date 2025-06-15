@@ -38,25 +38,22 @@ export default function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
       >
+        {" "}
         <Link href="/register">
-          <motion.button
-            className="relative inline-flex items-center justify-center px-10 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Zap className="w-5 h-5 mr-2" />
-            Get Started
-          </motion.button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <button className="relative inline-flex items-center justify-center px-10 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <Zap className="w-5 h-5 mr-2" />
+              Get Started
+            </button>
+          </motion.div>
         </Link>
         <Link href="/login">
-          <motion.button
-            className="relative inline-flex items-center justify-center px-10 py-4 text-lg font-medium text-blue-600 bg-transparent border-2 border-blue-500 rounded-full hover:bg-blue-50 transition-all duration-300 transform hover:scale-105"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <TrendingUp className="w-5 h-5 mr-2" />
-            Sign In
-          </motion.button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <button className="relative inline-flex items-center justify-center px-10 py-4 text-lg font-medium text-blue-600 bg-transparent border-2 border-blue-500 rounded-full hover:bg-blue-50 transition-all duration-300 transform hover:scale-105">
+              <TrendingUp className="w-5 h-5 mr-2" />
+              Sign In
+            </button>
+          </motion.div>
         </Link>
       </motion.div>
     </motion.div>

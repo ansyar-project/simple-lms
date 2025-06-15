@@ -1,6 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import HeroSection from "../HeroSection";
 
+// Mock framer-motion to avoid prop warnings
+jest.mock("framer-motion", () => ({
+  motion: {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  },
+}));
+
 // Mock Next.js components and hooks
 jest.mock("next/link", () => {
   return function MockLink({

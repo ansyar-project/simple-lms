@@ -19,7 +19,11 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
+    <Button
+      type="submit"
+      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+      disabled={pending}
+    >
       {pending ? "Creating account..." : "Create Account"}
     </Button>
   );
@@ -28,12 +32,13 @@ function SubmitButton() {
 export default function RegisterForm() {
   const initialState: RegisterState = { message: "", errors: {} };
   const [state, dispatch] = useActionState(register, initialState);
-
   return (
-    <div className="mx-auto max-w-sm space-y-6">
+    <div className="mx-auto max-w-sm space-y-6 bg-white/70 backdrop-blur-sm p-8 rounded-xl shadow-xl border border-blue-100">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">Create Account</h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 bg-clip-text text-transparent">
+          Create Account
+        </h1>
+        <p className="text-gray-600">
           Enter your information to create an account
         </p>
       </div>
@@ -100,7 +105,7 @@ export default function RegisterForm() {
           {state.errors?.role && (
             <p className="text-sm text-red-500">{state.errors.role[0]}</p>
           )}
-        </div>
+        </div>{" "}
         {state.errors?._form && (
           <p className="text-sm text-red-500">{state.errors._form[0]}</p>
         )}

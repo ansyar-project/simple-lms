@@ -1,8 +1,18 @@
-import RegisterForm from "@/components/forms/register-form";
+import { ReactNode } from "react";
 
-export default function RegisterPage() {
+interface ThemeBackgroundProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export default function ThemeBackground({
+  children,
+  className = "",
+}: ThemeBackgroundProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden ${className}`}
+    >
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]">
@@ -41,9 +51,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="relative z-10">
-        <RegisterForm />
-      </div>
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }

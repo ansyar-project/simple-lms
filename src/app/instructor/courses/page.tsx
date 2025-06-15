@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { CoursesList } from "@/components/course/CoursesList";
 import { CourseListSkeleton } from "@/components/course/CourseListSkeleton";
+import ThemeBackground from "@/components/ui/ThemeBackground";
+import GradientHeading from "@/components/ui/GradientHeading";
+import GradientButton from "@/components/ui/GradientButton";
 
 interface PageProps {
   searchParams: Promise<{
@@ -14,31 +16,37 @@ interface PageProps {
   }>;
 }
 
-export default async function InstructorCoursesPage({ searchParams }: PageProps) {
+export default async function InstructorCoursesPage({
+  searchParams,
+}: Readonly<PageProps>) {
   // Await searchParams to ensure we have the resolved values
   const resolvedSearchParams = await searchParams;
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
-          <p className="text-gray-600">
+    <ThemeBackground>
+      <div className="space-y-8 relative z-10">
+        {/* Header */}
+        <div className="text-center pt-16 pb-8">
+          <GradientHeading className="text-4xl md:text-5xl font-bold mb-4">
+            My Courses
+          </GradientHeading>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
             Manage and track your course content and student progress
           </p>
+          <Link href="/instructor/courses/new">
+            <GradientButton size="lg">
+              <PlusCircle className="h-5 w-5 mr-2" />
+              Create New Course
+            </GradientButton>
+          </Link>
         </div>
-        <Link href="/instructor/courses/new">
-          <Button className="w-full sm:w-auto">
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Create New Course
-          </Button>
-        </Link>
-      </div>
 
-      {/* Courses List */}
-      <Suspense fallback={<CourseListSkeleton />}>
-        <CoursesList searchParams={resolvedSearchParams} />
-      </Suspense>
-    </div>
+        {/* Courses List */}
+        <div className="container mx-auto px-4">
+          <Suspense fallback={<CourseListSkeleton />}>
+            <CoursesList searchParams={resolvedSearchParams} />
+          </Suspense>
+        </div>
+      </div>
+    </ThemeBackground>
   );
 }

@@ -16,7 +16,11 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
+    <Button
+      type="submit"
+      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+      disabled={pending}
+    >
       {pending ? "Signing in..." : "Sign In"}
     </Button>
   );
@@ -29,7 +33,7 @@ function GoogleButton() {
     <Button
       type="submit"
       variant="outline"
-      className="w-full"
+      className="w-full bg-white/70 backdrop-blur-sm border-blue-100 hover:bg-white/90"
       disabled={pending}
       formAction={signInWithGoogle}
     >
@@ -41,12 +45,13 @@ function GoogleButton() {
 export default function LoginForm() {
   const initialState: LoginState = { message: "", errors: {} };
   const [state, dispatch] = useActionState(authenticate, initialState);
-
   return (
-    <div className="mx-auto max-w-sm space-y-6">
+    <div className="mx-auto max-w-sm space-y-6 bg-white/70 backdrop-blur-sm p-8 rounded-xl shadow-xl border border-blue-100">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold">Sign In</h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 bg-clip-text text-transparent">
+          Sign In
+        </h1>
+        <p className="text-gray-600">
           Enter your email below to sign in to your account
         </p>
       </div>
@@ -65,21 +70,20 @@ export default function LoginForm() {
             <p className="text-sm text-red-500">{state.errors.email[0]}</p>
           )}
         </div>
-
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input id="password" name="password" type="password" required />
           {state.errors?.password && (
             <p className="text-sm text-red-500">{state.errors.password[0]}</p>
           )}
-        </div>
-
+        </div>{" "}
         {state.errors?._form && (
           <p className="text-sm text-red-500">{state.errors._form[0]}</p>
         )}
-
+        {state.message && !state.errors?._form && (
+          <p className="text-sm text-green-500">{state.message}</p>
+        )}
         <SubmitButton />
-
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
@@ -90,7 +94,6 @@ export default function LoginForm() {
             </span>
           </div>
         </div>
-
         <GoogleButton />
       </form>
 
