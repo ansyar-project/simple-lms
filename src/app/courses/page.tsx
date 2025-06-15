@@ -17,7 +17,7 @@ import { CourseEnrollButton } from "@/components/course/CourseEnrollButton";
 import { CourseStatus } from "@prisma/client";
 
 // Force dynamic rendering since we use auth()
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface CoursesCatalogProps {
   readonly searchParams: Promise<{ search?: string; category?: string }>;

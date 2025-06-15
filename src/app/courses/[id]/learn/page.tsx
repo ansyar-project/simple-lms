@@ -5,7 +5,7 @@ import { requireCourseAccess } from "@/lib/authorization";
 import { CourseLearningInterface } from "@/components/course/CourseLearningInterface";
 
 // Force dynamic rendering since we use auth()
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface CourseLearnPageProps {
   params: Promise<{ id: string }>;
@@ -16,8 +16,8 @@ export default async function CourseLearnPage({
   params,
   searchParams,
 }: Readonly<CourseLearnPageProps>) {
-    const awaitedParams = await params;
-    const awaitedSearchParams = await searchParams;
+  const awaitedParams = await params;
+  const awaitedSearchParams = await searchParams;
   const session = await auth();
 
   if (!session?.user) {

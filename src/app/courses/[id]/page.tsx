@@ -25,7 +25,7 @@ import { CourseEnrollButton } from "@/components/course/CourseEnrollButton";
 import { formatDistanceToNow } from "date-fns";
 
 // Force dynamic rendering since we use auth()
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface CourseDetailsPageProps {
   params: Promise<{ id: string }>;

@@ -205,19 +205,20 @@ export function CoursesList({ searchParams }: CoursesListProps) {
           </div>
           {/* Filters Row */}{" "}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {" "}
             {/* Category Filter */}
             <div>
               <Select
-                value={filters.categoryId}
+                value={filters.categoryId || "all"}
                 onValueChange={(value) =>
-                  handleFilterChange("categoryId", value)
+                  handleFilterChange("categoryId", value === "all" ? "" : value)
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
                       {category.name}
@@ -225,26 +226,26 @@ export function CoursesList({ searchParams }: CoursesListProps) {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-
+            </div>{" "}
             {/* Status Filter */}
             <div>
               <Select
-                value={filters.status}
-                onValueChange={(value) => handleFilterChange("status", value)}
+                value={filters.status || "all"}
+                onValueChange={(value) =>
+                  handleFilterChange("status", value === "all" ? "" : value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="DRAFT">Draft</SelectItem>
                   <SelectItem value="PUBLISHED">Published</SelectItem>
                   <SelectItem value="ARCHIVED">Archived</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
             {/* Sort By */}
             <div>
               <Select
@@ -262,7 +263,6 @@ export function CoursesList({ searchParams }: CoursesListProps) {
                 </SelectContent>
               </Select>
             </div>
-
             {/* Sort Order */}
             <div className="flex gap-2">
               <Button
