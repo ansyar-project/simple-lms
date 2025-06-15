@@ -6,6 +6,18 @@ import { BookOpen, Users, DollarSign, PlusCircle } from "lucide-react";
 // Force dynamic rendering since we use auth()
 export const dynamic = "force-dynamic";
 
+// Helper function to get status badge styles
+function getStatusBadgeStyles(status: string): string {
+  switch (status) {
+    case "PUBLISHED":
+      return "bg-green-100 text-green-800";
+    case "DRAFT":
+      return "bg-yellow-100 text-yellow-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
+
 export default async function InstructorDashboardPage() {
   const dashboardData = await getInstructorDashboard();
 
@@ -210,21 +222,17 @@ export default async function InstructorDashboardPage() {
                           <h3 className="font-medium text-gray-900 truncate hover:text-blue-600">
                             {course.title}
                           </h3>
-                        </Link>
+                        </Link>{" "}
                         <p className="text-sm text-gray-500">
-                          {course._count?.modules || 0} modules •{" "}
-                          {course._count?.enrollments || 0} students
+                          {course._count?.modules ?? 0} modules •{" "}
+                          {course._count?.enrollments ?? 0} students
                         </p>
-                      </div>
+                      </div>{" "}
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            course.status === "PUBLISHED"
-                              ? "bg-green-100 text-green-800"
-                              : course.status === "DRAFT"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
+                          className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeStyles(
+                            course.status
+                          )}`}
                         >
                           {course.status}
                         </span>
@@ -252,9 +260,10 @@ export default async function InstructorDashboardPage() {
                         key={enrollment.id}
                         className="flex items-center justify-between p-3 border border-blue-100 rounded-lg hover:bg-white/50 transition-all duration-300"
                       >
+                        {" "}
                         <div>
                           <h3 className="font-medium text-gray-900">
-                            {enrollment.user.name || enrollment.user.email}
+                            {enrollment.user.name ?? enrollment.user.email}
                           </h3>
                           <p className="text-sm text-gray-500">
                             Enrolled in {enrollment.course.title} on{" "}

@@ -710,9 +710,7 @@ export async function getInstructorDashboard(): Promise<InstructorDashboard> {
     const serializedRecentCourses = recentCourses.map((course) => ({
       ...course,
       price: course.price ? Number(course.price) : null,
-    }));
-
-    // Get recent enrollments
+    })); // Get recent enrollments
     const recentEnrollments = await db.enrollment.findMany({
       where: {
         course: where,
@@ -720,6 +718,9 @@ export async function getInstructorDashboard(): Promise<InstructorDashboard> {
       include: {
         user: {
           select: { id: true, name: true, email: true },
+        },
+        course: {
+          select: { id: true, title: true, slug: true },
         },
       },
       orderBy: { enrolledAt: "desc" },

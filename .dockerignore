@@ -129,3 +129,7 @@ README.md
 # Storybook
 .storybook-out/
 storybook-static/
+
+
+# Test files
+*.test.*

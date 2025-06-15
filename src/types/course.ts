@@ -42,6 +42,11 @@ export interface EnrollmentWithCourse extends Enrollment {
   course: Pick<Course, "id" | "title" | "thumbnail" | "slug">;
 }
 
+export interface EnrollmentWithUserAndCourse extends Enrollment {
+  user: Pick<User, "id" | "name" | "email">;
+  course: Pick<Course, "id" | "title" | "slug">;
+}
+
 // Course statistics
 export interface CourseStats {
   totalCourses: number;
@@ -55,7 +60,7 @@ export interface CourseStats {
 export interface InstructorDashboard {
   stats: CourseStats;
   recentCourses: CourseWithDetails[];
-  recentEnrollments: EnrollmentWithUser[];
+  recentEnrollments: EnrollmentWithUserAndCourse[];
 }
 
 // Course search and filtering

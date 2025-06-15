@@ -9,7 +9,6 @@ jest.mock("react", () => ({
   useActionState: jest.fn(),
 }));
 
-const { useFormStatus } = jest.requireMock("react-dom");
 jest.mock("react-dom", () => ({
   ...jest.requireActual("react-dom"),
   useFormStatus: jest.fn(() => ({ pending: false })),
