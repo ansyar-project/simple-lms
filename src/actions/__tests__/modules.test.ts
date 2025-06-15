@@ -100,10 +100,9 @@ describe("Modules Actions", () => {
     it("should create module successfully", async () => {
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
       (db.course.findFirst as jest.Mock).mockResolvedValue(mockCourse);
-      (db.module.findFirst as jest.Mock).mockResolvedValue(null); // No previous modules
-      (db.module.create as jest.Mock).mockResolvedValue(mockModule);
+      (db.module.findFirst as jest.Mock).mockResolvedValue(null); // No previous modules      (db.module.create as jest.Mock).mockResolvedValue(mockModule);
 
-      const result = await createModule({} as any, validFormData);
+      const result = await createModule({ success: false }, validFormData);
 
       expect(result).toEqual({
         success: true,
@@ -143,10 +142,9 @@ describe("Modules Actions", () => {
 
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
       (db.course.findFirst as jest.Mock).mockResolvedValue(mockCourse);
-      (db.module.findFirst as jest.Mock).mockResolvedValue({ order: 3 }); // Last module has order 3
-      (db.module.create as jest.Mock).mockResolvedValue(mockModule);
+      (db.module.findFirst as jest.Mock).mockResolvedValue({ order: 3 }); // Last module has order 3      (db.module.create as jest.Mock).mockResolvedValue(mockModule);
 
-      await createModule({} as any, formDataWithoutOrder);
+      await createModule({ success: false }, formDataWithoutOrder);
 
       expect(db.module.create).toHaveBeenCalledWith({
         data: {
@@ -163,10 +161,9 @@ describe("Modules Actions", () => {
         courseId: "", // Invalid: empty courseId
         title: "", // Invalid: empty title
       });
-
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
 
-      const result = await createModule({} as any, invalidFormData);
+      const result = await createModule({ success: false }, invalidFormData);
 
       expect(result.success).toBe(false);
       expect(result.message).toBe("Validation failed");
@@ -177,7 +174,7 @@ describe("Modules Actions", () => {
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
       (db.course.findFirst as jest.Mock).mockResolvedValue(null);
 
-      const result = await createModule({} as any, validFormData);
+      const result = await createModule({ success: false }, validFormData);
 
       expect(result).toEqual({
         success: false,
@@ -188,7 +185,7 @@ describe("Modules Actions", () => {
     it("should handle authorization failure", async () => {
       (authorize as jest.Mock).mockRejectedValue(new Error("Not authorized"));
 
-      const result = await createModule({} as any, validFormData);
+      const result = await createModule({ success: false }, validFormData);
 
       expect(result).toEqual({
         success: false,
@@ -216,7 +213,7 @@ describe("Modules Actions", () => {
         title: "Updated Module",
       });
 
-      const result = await updateModule({} as any, updateFormData);
+      const result = await updateModule({ success: false }, updateFormData);
 
       expect(result).toEqual({
         success: true,
@@ -237,10 +234,9 @@ describe("Modules Actions", () => {
         id: "", // Invalid: empty id
         title: "", // Invalid: empty title
       });
-
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
 
-      const result = await updateModule({} as any, invalidUpdateData);
+      const result = await updateModule({ success: false }, invalidUpdateData);
 
       expect(result.success).toBe(false);
       expect(result.message).toBe("Validation failed");
@@ -250,7 +246,7 @@ describe("Modules Actions", () => {
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(null);
 
-      const result = await updateModule({} as any, updateFormData);
+      const result = await updateModule({ success: false }, updateFormData);
 
       expect(result).toEqual({
         success: false,

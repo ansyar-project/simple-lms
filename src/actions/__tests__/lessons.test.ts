@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import {
   createLesson,
   updateLesson,
@@ -11,13 +15,35 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
 // Mock dependencies
-jest.mock("@/lib/authorization");
-jest.mock("@/lib/db");
-jest.mock("next/cache");
+jest.mock("@/lib/authorization", () => ({
+  authorize: jest.fn(),
+}));
+
+jest.mock("@/lib/db", () => ({
+  db: {
+    module: {
+      findFirst: jest.fn(),
+    },
+    lesson: {
+      findFirst: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+    },
+    $transaction: jest.fn(),
+  },
+}));
+
+jest.mock("next/cache", () => ({
+  revalidatePath: jest.fn(),
+}));
 
 const mockAuthorize = authorize as jest.MockedFunction<typeof authorize>;
-const mockDb = db as any;
-const mockRevalidatePath = revalidatePath as jest.MockedFunction<typeof revalidatePath>;
+const mockRevalidatePath = revalidatePath as jest.MockedFunction<
+  typeof revalidatePath
+>;
 
 // Mock console.error
 const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
@@ -73,20 +99,6 @@ describe("Lessons Actions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     consoleSpy.mockClear();
-    
-    // Setup default mocks for db
-    mockDb.module = {
-      findFirst: jest.fn(),
-    };
-    mockDb.lesson = {
-      findFirst: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-    };
-    mockDb.$transaction = jest.fn();
   });
 
   afterAll(() => {
@@ -101,13 +113,15 @@ describe("Lessons Actions", () => {
       contentType: "TEXT",
       duration: "30",
       order: "1",
-    });    it("should create lesson successfully", async () => {
-      mockAuthorize.mockResolvedValue(mockInstructor);
-      mockDb.module.findFirst.mockResolvedValue(mockModule);
-      mockDb.lesson.findFirst.mockResolvedValue(null); // No previous lessons
-      mockDb.lesson.create.mockResolvedValue(mockLesson);
+    });
 
-      const result = await createLesson({} as any, validFormData);
+    it("should create lesson successfully", async () => {
+      mockAuthorize.mockResolvedValue(mockInstructor);
+      (db.module.findFirst as jest.Mock).mockResolvedValue(mockModule);
+      (db.lesson.findFirst as jest.Mock).mockResolvedValue(null);
+      (db.lesson.create as jest.Mock).mockResolvedValue(mockLesson);
+
+      const result = await createLesson({ success: false }, validFormData);
 
       expect(result).toEqual({
         success: true,
@@ -115,7 +129,7 @@ describe("Lessons Actions", () => {
       });
 
       expect(mockAuthorize).toHaveBeenCalledWith(["INSTRUCTOR", "ADMIN"]);
-      expect(mockDb.module.findFirst).toHaveBeenCalledWith({
+      expect(db.module.findFirst).toHaveBeenCalledWith({
         where: {
           id: "module123",
           course: {
@@ -126,7 +140,7 @@ describe("Lessons Actions", () => {
           course: true,
         },
       });
-      expect(mockDb.lesson.create).toHaveBeenCalledWith({
+      expect(db.lesson.create).toHaveBeenCalledWith({
         data: {
           moduleId: "module123",
           title: "New Lesson",
@@ -151,15 +165,14 @@ describe("Lessons Actions", () => {
         title: "New Lesson",
         content: "Lesson content",
         contentType: "TEXT",
-        order: "0", // 0 means auto-generate
+        order: "0",
       });
-
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(mockModule);
-      (db.lesson.findFirst as jest.Mock).mockResolvedValue({ order: 3 }); // Last lesson has order 3
+      (db.lesson.findFirst as jest.Mock).mockResolvedValue({ order: 3 });
       (db.lesson.create as jest.Mock).mockResolvedValue(mockLesson);
 
-      await createLesson({} as any, formDataWithoutOrder);
+      await createLesson({ success: false }, formDataWithoutOrder);
 
       expect(db.lesson.create).toHaveBeenCalledWith({
         data: {
@@ -169,21 +182,20 @@ describe("Lessons Actions", () => {
           contentType: "TEXT",
           videoUrl: undefined,
           duration: undefined,
-          order: 4, // Should be last order + 1
+          order: 4,
         },
       });
     });
 
     it("should fail validation with invalid data", async () => {
       const invalidFormData = createMockFormData({
-        moduleId: "", // Invalid: empty moduleId
-        title: "", // Invalid: empty title
+        moduleId: "",
+        title: "",
         contentType: "INVALID_TYPE",
       });
+      mockAuthorize.mockResolvedValue(mockInstructor);
 
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
-
-      const result = await createLesson({} as any, invalidFormData);
+      const result = await createLesson({ success: false }, invalidFormData);
 
       expect(result.success).toBe(false);
       expect(result.message).toBe("Validation failed");
@@ -191,10 +203,10 @@ describe("Lessons Actions", () => {
     });
 
     it("should fail if module not found or no permission", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(null);
 
-      const result = await createLesson({} as any, validFormData);
+      const result = await createLesson({ success: false }, validFormData);
 
       expect(result).toEqual({
         success: false,
@@ -203,9 +215,9 @@ describe("Lessons Actions", () => {
     });
 
     it("should handle authorization failure", async () => {
-      (authorize as jest.Mock).mockRejectedValue(new Error("Not authorized"));
+      mockAuthorize.mockRejectedValue(new Error("Not authorized"));
 
-      const result = await createLesson({} as any, validFormData);
+      const result = await createLesson({ success: false }, validFormData);
 
       expect(result).toEqual({
         success: false,
@@ -225,7 +237,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should update lesson successfully", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue({
         ...mockLesson,
         module: mockModule,
@@ -235,7 +247,7 @@ describe("Lessons Actions", () => {
         title: "Updated Lesson",
       });
 
-      const result = await updateLesson({} as any, updateFormData);
+      const result = await updateLesson({ success: false }, updateFormData);
 
       expect(result).toEqual({
         success: true,
@@ -256,23 +268,22 @@ describe("Lessons Actions", () => {
 
     it("should fail validation with invalid data", async () => {
       const invalidUpdateData = createMockFormData({
-        id: "", // Invalid: empty id
-        title: "", // Invalid: empty title
+        id: "",
+        title: "",
       });
+      mockAuthorize.mockResolvedValue(mockInstructor);
 
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
-
-      const result = await updateLesson({} as any, invalidUpdateData);
+      const result = await updateLesson({ success: false }, invalidUpdateData);
 
       expect(result.success).toBe(false);
       expect(result.message).toBe("Validation failed");
     });
 
     it("should fail if lesson not found or no permission", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue(null);
 
-      const result = await updateLesson({} as any, updateFormData);
+      const result = await updateLesson({ success: false }, updateFormData);
 
       expect(result).toEqual({
         success: false,
@@ -283,7 +294,7 @@ describe("Lessons Actions", () => {
 
   describe("deleteLesson", () => {
     it("should delete lesson successfully", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue({
         ...mockLesson,
         module: mockModule,
@@ -300,13 +311,13 @@ describe("Lessons Actions", () => {
       expect(db.lesson.delete).toHaveBeenCalledWith({
         where: { id: "lesson123" },
       });
-      expect(revalidatePath).toHaveBeenCalledWith(
+      expect(mockRevalidatePath).toHaveBeenCalledWith(
         "/instructor/courses/course123"
       );
     });
 
     it("should fail if lesson not found or no permission", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue(null);
 
       const result = await deleteLesson("lesson123");
@@ -318,7 +329,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should handle database errors", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue({
         ...mockLesson,
         module: mockModule,
@@ -340,8 +351,10 @@ describe("Lessons Actions", () => {
     const reorderInput = {
       moduleId: "module123",
       lessonIds: ["lesson3", "lesson1", "lesson2"],
-    };    it("should reorder lessons successfully", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+    };
+
+    it("should reorder lessons successfully", async () => {
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(mockModule);
       (db.$transaction as jest.Mock).mockResolvedValue([
         { id: "lesson3", order: 1 },
@@ -356,7 +369,6 @@ describe("Lessons Actions", () => {
         message: "Lessons reordered successfully",
       });
 
-      // Should call db.$transaction with array of update operations
       expect(db.$transaction).toHaveBeenCalledTimes(1);
       const transactionCalls = (db.$transaction as jest.Mock).mock.calls[0][0];
       expect(transactionCalls).toHaveLength(3);
@@ -364,11 +376,11 @@ describe("Lessons Actions", () => {
 
     it("should fail validation with invalid input", async () => {
       const invalidInput = {
-        moduleId: "", // Invalid: empty moduleId
-        lessonIds: [], // Invalid: empty array
+        moduleId: "",
+        lessonIds: [],
       };
 
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
 
       const result = await reorderLessons(invalidInput);
 
@@ -379,7 +391,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should fail if module not found or no permission", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(null);
 
       const result = await reorderLessons(reorderInput);
@@ -393,7 +405,7 @@ describe("Lessons Actions", () => {
 
   describe("getModuleLessons", () => {
     it("should return lessons for authorized user", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(mockModule);
       (db.lesson.findMany as jest.Mock).mockResolvedValue(mockLessons);
 
@@ -407,7 +419,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should throw error if module not found or no access", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue(null);
 
       await expect(getModuleLessons("module123")).rejects.toThrow(
@@ -416,7 +428,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should throw error on authorization failure", async () => {
-      (authorize as jest.Mock).mockRejectedValue(new Error("Not authorized"));
+      mockAuthorize.mockRejectedValue(new Error("Not authorized"));
 
       await expect(getModuleLessons("module123")).rejects.toThrow(
         "Not authorized"
@@ -426,7 +438,7 @@ describe("Lessons Actions", () => {
 
   describe("getLesson", () => {
     it("should return lesson for authorized user", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue({
         ...mockLesson,
         module: mockModule,
@@ -458,7 +470,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should throw error if lesson not found or no access", async () => {
-      (authorize as jest.Mock).mockResolvedValue(mockInstructor);
+      mockAuthorize.mockResolvedValue(mockInstructor);
       (db.lesson.findFirst as jest.Mock).mockResolvedValue(null);
 
       await expect(getLesson("lesson123")).rejects.toThrow(
@@ -467,7 +479,7 @@ describe("Lessons Actions", () => {
     });
 
     it("should throw error on authorization failure", async () => {
-      (authorize as jest.Mock).mockRejectedValue(new Error("Not authorized"));
+      mockAuthorize.mockRejectedValue(new Error("Not authorized"));
 
       await expect(getLesson("lesson123")).rejects.toThrow("Not authorized");
     });

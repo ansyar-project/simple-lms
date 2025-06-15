@@ -164,8 +164,10 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }));
 
-// Mock window.confirm for delete operations
-Object.defineProperty(window, "confirm", {
-  writable: true,
-  value: jest.fn(() => true),
-});
+// Mock window.confirm for delete operations (only in jsdom environment)
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "confirm", {
+    writable: true,
+    value: jest.fn(() => true),
+  });
+}

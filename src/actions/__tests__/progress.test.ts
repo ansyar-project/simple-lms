@@ -7,7 +7,6 @@ import {
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { requireEnrollment } from "@/lib/authorization";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 // Mock dependencies

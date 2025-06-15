@@ -18,6 +18,8 @@ RUN pnpm install --frozen-lockfile
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+ENV NEXT_TELEMETRY_DISABLED=1
+
 # Install pnpm
 RUN corepack enable pnpm
 
@@ -39,6 +41,8 @@ RUN pnpm build
 # Stage 3: Runner (Production)
 FROM node:20-alpine AS runner
 WORKDIR /app
+
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install pnpm and create non-root user
 RUN corepack enable pnpm && \
