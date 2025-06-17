@@ -12,26 +12,28 @@ datasource db {
 
 // User Management
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  role          Role      @default(STUDENT)
-  avatar        String?
-  password      String?   // For credential auth
-  emailVerified DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
+  id               String            @id @default(cuid())
+  email            String            @unique
+  name             String?
+  role             Role              @default(STUDENT)
+  avatar           String?
+  password         String? // For credential auth
+  emailVerified    DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   // Relations
-  accounts        Account[]
-  sessions        Session[]
-  courses         Course[]       // Courses created (for instructors)
-  enrollments     Enrollment[]
-  lessonProgress  LessonProgress[]
-  quizAttempts    QuizAttempt[]
-  assignments     Assignment[]   // Assignments created
-  submissions     Submission[]
-  notifications   Notification[]
+  accounts         Account[]
+  sessions         Session[]
+  courses          Course[] // Courses created (for instructors)
+  enrollments      Enrollment[]
+  lessonProgress   LessonProgress[]
+  quizAttempts     QuizAttempt[]
+  assignments      Assignment[] // Assignments created
+  submissions      Submission[]
+  notifications    Notification[]
+  learningSessions LearningSession[]
+  learningStreak   LearningStreak?
+  achievements     UserAchievement[]
 
   @@map("users")
 }
@@ -88,23 +90,23 @@ model Category {
 }
 
 model Course {
-  id          String      @id @default(cuid())
-  title       String
-  description String      @db.Text
-  slug        String      @unique
-  instructorId String     @map("instructor_id")
-  categoryId  String      @map("category_id")
-  price       Decimal?    @db.Decimal(10, 2)
-  thumbnail   String?
-  status      CourseStatus @default(DRAFT)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
+  id               String            @id @default(cuid())
+  title            String
+  description      String            @db.Text
+  slug             String            @unique
+  instructorId     String            @map("instructor_id")
+  categoryId       String            @map("category_id")
+  price            Decimal?          @db.Decimal(10, 2)
+  thumbnail        String?
+  status           CourseStatus      @default(DRAFT)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   // Relations
-  instructor   User         @relation(fields: [instructorId], references: [id])
-  category     Category     @relation(fields: [categoryId], references: [id])
-  modules      Module[]
-  enrollments  Enrollment[]
+  instructor       User              @relation(fields: [instructorId], references: [id])
+  category         Category          @relation(fields: [categoryId], references: [id])
+  modules          Module[]
+  enrollments      Enrollment[]
+  learningSessions LearningSession[]
 
   // Indexes for performance
   @@index([instructorId])
@@ -135,21 +137,21 @@ model Module {
 }
 
 model Lesson {
-  id          String      @id @default(cuid())
-  moduleId    String      @map("module_id")
-  title       String
-  content     String?     @db.Text
-  contentType ContentType
-  videoUrl    String?     @map("video_url")
-  duration    Int?        // in seconds
-  order       Int
-  createdAt   DateTime    @default(now())
-
+  id               String            @id @default(cuid())
+  moduleId         String            @map("module_id")
+  title            String
+  content          String?           @db.Text
+  contentType      ContentType
+  videoUrl         String?           @map("video_url")
+  duration         Int? // in seconds
+  order            Int
+  createdAt        DateTime          @default(now())
   // Relations
-  module          Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  progress        LessonProgress[]
-  quizAttempts    QuizAttempt[]
-  assignments     Assignment[]
+  module           Module            @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress         LessonProgress[]
+  quizAttempts     QuizAttempt[]
+  assignments      Assignment[]
+  learningSessions LearningSession[]
 
   @@map("lessons")
 }
@@ -248,13 +250,87 @@ model Notification {
   title     String
   message   String           @db.Text
   read      Boolean          @default(false)
-  data      Json?            // Additional data
+  data      Json? // Additional data
   createdAt DateTime         @default(now()) @map("created_at")
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+// Learning Analytics & Progress Tracking
+model LearningSession {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  courseId  String    @map("course_id")
+  lessonId  String?   @map("lesson_id")
+  startTime DateTime  @map("start_time")
+  endTime   DateTime? @map("end_time")
+  duration  Int? // in minutes
+  completed Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lesson Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([courseId])
+  @@index([startTime])
+  @@index([userId, courseId])
+  @@map("learning_sessions")
+}
+
+model LearningStreak {
+  id            String    @id @default(cuid())
+  userId        String    @unique @map("user_id")
+  currentStreak Int       @default(0) @map("current_streak")
+  longestStreak Int       @default(0) @map("longest_streak")
+  lastActivity  DateTime? @map("last_activity")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("learning_streaks")
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String
+  category    String // e.g., "streak", "completion", "time", "engagement"
+  criteria    Json // Flexible criteria definition
+  points      Int      @default(0)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  achievementId String   @map("achievement_id")
+  earnedAt      DateTime @default(now()) @map("earned_at")
+  progress      Float    @default(1.0) // 0.0 to 1.0, for partial achievements
+
+  // Relations
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([earnedAt])
+  @@map("user_achievements")
 }
 
 // Enums

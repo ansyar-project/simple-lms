@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Home, User, LogOut, Search } from "lucide-react";
+import { BookOpen, Home, User, LogOut, Search, BarChart3 } from "lucide-react";
 
 export default async function StudentLayout({
   children,
@@ -44,21 +44,26 @@ export default async function StudentLayout({
                 <Home className="h-4 w-4" />
                 <span>Dashboard</span>
               </Link>
-
               <Link
                 href="/courses"
                 className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
               >
                 <Search className="h-4 w-4" />
                 <span>Browse Courses</span>
-              </Link>
-
+              </Link>{" "}
               <Link
                 href="/courses/my-courses"
                 className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
               >
                 <BookOpen className="h-4 w-4" />
                 <span>My Courses</span>
+              </Link>
+              <Link
+                href="/student/analytics"
+                className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              >
+                <BarChart3 className="h-4 w-4" />
+                <span>Analytics</span>
               </Link>
             </div>
 
