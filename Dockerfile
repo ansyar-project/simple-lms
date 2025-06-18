@@ -49,15 +49,10 @@ RUN corepack enable pnpm && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy built application
+# Copy built application (standalone includes all dependencies and generated files)
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-
-# Copy Prisma files for runtime
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Create uploads directory and set proper permissions
 RUN mkdir -p uploads && \
