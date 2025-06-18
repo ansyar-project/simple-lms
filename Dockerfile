@@ -44,8 +44,9 @@ WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install pnpm and create non-root user
+# Install pnpm, curl, and create non-root user
 RUN corepack enable pnpm && \
+    apk add --no-cache curl && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
@@ -69,7 +70,7 @@ ENV HOSTNAME="0.0.0.0"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-  CMD node healthcheck.js || exit 1
+  CMD curl -f http://localhost:3000/api/health || exit 1
 
 # Start the application
 CMD ["node", "server.js"]
