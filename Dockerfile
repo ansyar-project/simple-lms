@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for Next.js LMS Application
-ARG DATABASE_URL
+
 
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
@@ -20,6 +20,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
 # Install pnpm
 RUN corepack enable pnpm
@@ -56,9 +58,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Create uploads directory and set proper permissions
-RUN mkdir -p uploads && \
-    chown -R nextjs:nodejs /app
+# Set proper permissions
+RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 # Expose port

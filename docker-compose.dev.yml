@@ -15,14 +15,12 @@ services:
       - REDIS_URL=redis://redis:6379
       - NEXTAUTH_SECRET=development-secret-key
       - NEXTAUTH_URL=http://localhost:3000
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_ENDPOINT=minio:9000      - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_PORT=9000
     volumes:
       - .:/app
       - /app/node_modules
-      - uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -96,7 +94,6 @@ volumes:
   postgres_data:
   redis_data:
   minio_data:
-  uploads:
 
 networks:
   lms-network:
