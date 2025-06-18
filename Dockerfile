@@ -1,4 +1,5 @@
 # Multi-stage Dockerfile for Next.js LMS Application
+ARG DATABASE_URL
 
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
