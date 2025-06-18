@@ -12,6 +12,8 @@ const loginSchema = z.object({
 });
 
 export const authConfig: NextAuthConfig = {
+  // Trust host configuration for production deployments
+  trustHost: true,
   adapter: PrismaAdapter(db),
   providers: [
     Google({

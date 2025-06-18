@@ -1,13 +1,9 @@
-import {  expect } from "@jest/globals";
-import {
-  createQuiz,
-  publishQuiz,
-  getQuizWithQuestions,
-} from "../quizzes";
-import { auth } from "@/lib/auth";
+import { createQuiz, publishQuiz, getQuizWithQuestions } from "../quizzes";
 
 // Mock dependencies
-jest.mock("@/lib/auth");
+jest.mock("@/lib/auth", () => ({
+  auth: jest.fn(),
+}));
 
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(() => {
@@ -18,9 +14,6 @@ jest.mock("next/navigation", () => ({
 jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),
 }));
-
-// Mock dependencies
-jest.mock("@/lib/auth");
 jest.mock("@/lib/db", () => ({
   db: {
     quiz: {
@@ -46,15 +39,26 @@ jest.mock("@/lib/db", () => ({
 
 // Import db after mocking
 import { db } from "@/lib/db";
+import { auth } from "@/lib/auth";
+import type { Session } from "next-auth";
 
+// Properly type the mocked auth function
 const mockAuth = auth as jest.MockedFunction<typeof auth>;
 
+// Create a simpler typed version for our tests
+const mockAuthResolver = mockAuth as unknown as jest.MockedFunction<
+  () => Promise<Session | null>
+>;
+
 describe("Quiz System Actions", () => {
-  const mockSession = {
+  const mockSession: Session = {
     user: {
       id: "instructor123",
-      role: "INSTRUCTOR",
+      role: "INSTRUCTOR" as const,
+      name: "Test Instructor",
+      email: "instructor@test.com",
     },
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
   };
 
   const mockLesson = {
@@ -97,7 +101,7 @@ describe("Quiz System Actions", () => {
   };
   beforeEach(() => {
     jest.clearAllMocks();
-    mockAuth.mockResolvedValue(mockSession);
+    mockAuthResolver.mockResolvedValue(mockSession);
     (db.lesson.findUnique as jest.Mock).mockResolvedValue(mockLesson);
   });
 
@@ -160,7 +164,7 @@ describe("Quiz System Actions", () => {
       });
     });
     it("should fail if user is not authenticated", async () => {
-      mockAuth.mockResolvedValue(null);
+      mockAuthResolver.mockResolvedValue(null);
 
       const result = await createQuiz(mockQuizData);
 

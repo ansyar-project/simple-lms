@@ -173,6 +173,49 @@ MINIO_ACCESS_KEY="your-access-key"
 MINIO_SECRET_KEY="your-secret-key"
 ```
 
+## 🚀 Production Deployment
+
+### NextAuth.js Configuration for Production
+
+When deploying to production, you **must** configure the `NEXTAUTH_URL` environment variable to match your production domain to avoid the `UntrustedHost` error.
+
+#### For your deployment at `simple-lms.ansyar-world.top`:
+
+1. **Set the correct NEXTAUTH_URL** in your production environment:
+
+   ```env
+   NEXTAUTH_URL="https://simple-lms.ansyar-world.top"
+   ```
+
+2. **Ensure NEXTAUTH_SECRET is secure** (generate a random 32+ character string):
+
+   ```bash
+   # Generate a secure secret
+   openssl rand -base64 32
+   ```
+
+3. **For Docker deployments**, update your `.env` file:
+   ```env
+   NEXTAUTH_URL="https://simple-lms.ansyar-world.top"
+   NEXTAUTH_SECRET="your-super-secure-randomly-generated-secret"
+   ```
+
+#### Troubleshooting UntrustedHost Error
+
+If you encounter the `UntrustedHost` error:
+
+1. **Verify NEXTAUTH_URL** matches your production domain exactly
+2. **Check environment variables** are loaded correctly in your deployment
+3. **Restart your application** after changing environment variables
+4. **For reverse proxy setups**, ensure the `Host` header is forwarded correctly
+
+#### Security Considerations
+
+- Always use HTTPS in production (`https://` not `http://`)
+- Keep `NEXTAUTH_SECRET` secure and never commit it to version control
+- Regularly rotate your authentication secrets
+- Configure proper CORS policies for your domain
+
 ## 🎯 Development Phases
 
 The project is developed in structured phases:

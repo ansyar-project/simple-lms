@@ -158,9 +158,29 @@ docker-compose down --rmi all
    - Use secure secret management in production
 
 3. **Network Security:**
+
    - Use reverse proxy (nginx/traefik)
    - Enable HTTPS
    - Restrict port access
+
+4. **NextAuth.js Configuration:**
+
+   **Critical**: Set `NEXTAUTH_URL` to your exact production domain to avoid `UntrustedHost` errors:
+
+   ```bash
+   # Example for your deployment
+   NEXTAUTH_URL=https://simple-lms.ansyar-world.top
+
+   # Generate secure secret (32+ characters)
+   NEXTAUTH_SECRET=$(openssl rand -base64 32)
+   ```
+
+   **Common NextAuth Issues:**
+
+   - ❌ `NEXTAUTH_URL=http://localhost:3000` (wrong for production)
+   - ❌ `NEXTAUTH_URL=https://localhost:3000` (wrong protocol for local)
+   - ✅ `NEXTAUTH_URL=https://your-domain.com` (correct for production)
+   - ✅ `NEXTAUTH_URL=http://localhost:3000` (correct for local development)
 
 ### Example Production Deployment
 
