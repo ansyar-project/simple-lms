@@ -253,15 +253,16 @@ describe("Lessons Actions", () => {
         success: true,
         message: "Lesson updated successfully",
       });
-
       expect(db.lesson.update).toHaveBeenCalledWith({
         where: { id: "lesson123" },
         data: {
+          moduleId: "module123",
           title: "Updated Lesson",
           content: "Updated content",
           contentType: "TEXT",
           videoUrl: undefined,
           duration: 45,
+          order: undefined,
         },
       });
     });
@@ -464,6 +465,14 @@ describe("Lessons Actions", () => {
             include: {
               course: true,
             },
+          },
+          quizzes: {
+            include: {
+              questions: {
+                orderBy: { order: "asc" },
+              },
+            },
+            orderBy: { createdAt: "desc" },
           },
         },
       });

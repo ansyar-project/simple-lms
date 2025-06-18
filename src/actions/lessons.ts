@@ -354,6 +354,14 @@ export async function getLesson(lessonId: string) {
             course: true,
           },
         },
+        quizzes: {
+          include: {
+            questions: {
+              orderBy: { order: "asc" },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 

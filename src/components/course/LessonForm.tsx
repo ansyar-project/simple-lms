@@ -58,7 +58,7 @@ const contentTypes = [
     value: "QUIZ",
     label: "Quiz",
     icon: HelpCircle,
-    description: "Interactive quiz (Coming soon)",
+    description: "Interactive quiz for assessment",
   },
   {
     value: "ASSIGNMENT",

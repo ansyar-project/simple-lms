@@ -137,26 +137,6 @@ jest.mock("@/lib/auth.config", () => ({
   authConfig: {},
 }));
 
-jest.mock("@/lib/authorization", () => ({
-  requireInstructor: jest.fn(),
-  requireAuth: jest.fn(),
-}));
-
-// Mock server actions
-jest.mock("@/actions/modules", () => ({
-  createModule: jest.fn(),
-  updateModule: jest.fn(),
-  deleteModule: jest.fn(),
-  reorderModules: jest.fn(),
-}));
-
-jest.mock("@/actions/lessons", () => ({
-  createLesson: jest.fn(),
-  updateLesson: jest.fn(),
-  deleteLesson: jest.fn(),
-  reorderLessons: jest.fn(),
-}));
-
 // Global test helpers
 global.ResizeObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),

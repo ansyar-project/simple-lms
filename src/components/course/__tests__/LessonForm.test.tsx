@@ -430,7 +430,7 @@ describe("LessonForm", () => {
         screen.getByText("Video lesson with optional text")
       ).toBeInTheDocument();
       expect(
-        screen.getByText("Interactive quiz (Coming soon)")
+        screen.getByText("Interactive quiz for assessment")
       ).toBeInTheDocument();
       expect(
         screen.getByText("Assignment task (Coming soon)")

@@ -11,11 +11,15 @@ export async function authorize(allowedRoles: Role[]) {
     redirect("/login");
   }
 
-  if (!allowedRoles.includes(session.user.role)) {
-    redirect("/dashboard"); // Redirect to appropriate dashboard
+  // Admin users have access to all roles
+  if (
+    session.user.role === "ADMIN" ||
+    allowedRoles.includes(session.user.role)
+  ) {
+    return session.user;
   }
 
-  return session.user;
+  redirect("/dashboard"); // Redirect to appropriate dashboard
 }
 
 export async function getCurrentUser() {

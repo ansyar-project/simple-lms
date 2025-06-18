@@ -149,7 +149,7 @@ model Lesson {
   // Relations
   module           Module            @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   progress         LessonProgress[]
-  quizAttempts     QuizAttempt[]
+  quizzes          Quiz[]
   assignments      Assignment[]
   learningSessions LearningSession[]
 
@@ -189,19 +189,83 @@ model LessonProgress {
   @@map("lesson_progress")
 }
 
+// Quiz System
+model Quiz {
+  id               String        @id @default(cuid())
+  lessonId         String        @map("lesson_id")
+  title            String
+  description      String?       @db.Text
+  instructions     String?       @db.Text
+  timeLimit        Int?          @map("time_limit") // in minutes
+  attemptsAllowed  Int           @default(1) @map("attempts_allowed")
+  shuffleQuestions Boolean       @default(false) @map("shuffle_questions")
+  showResults      Boolean       @default(true) @map("show_results")
+  passingScore     Float?        @map("passing_score") // percentage (0-100)
+  isPublished      Boolean       @default(false) @map("is_published")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  lesson      Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  attempts    QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id             String       @id @default(cuid())
+  quizId         String       @map("quiz_id")
+  type           QuestionType
+  question       String       @db.Text
+  options        Json? // For multiple choice questions
+  correctAnswer  Json         @map("correct_answer")
+  explanation    String?      @db.Text
+  points         Int          @default(1)
+  order          Int
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  quiz    Quiz            @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers QuestionAnswer[]
+
+  @@map("questions")
+}
+
 model QuizAttempt {
   id          String   @id @default(cuid())
   userId      String   @map("user_id")
-  lessonId    String   @map("lesson_id")
+  quizId      String   @map("quiz_id")
   score       Float
-  answers     Json
-  attemptedAt DateTime @default(now()) @map("attempted_at")
+  totalPoints Int      @map("total_points")
+  passed      Boolean  @default(false)
+  timeSpent   Int?     @map("time_spent") // in seconds
+  startedAt   DateTime @default(now()) @map("started_at")
+  completedAt DateTime? @map("completed_at")
 
   // Relations
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz    Quiz             @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers QuestionAnswer[]
 
   @@map("quiz_attempts")
+}
+
+model QuestionAnswer {
+  id           String @id @default(cuid())
+  attemptId    String @map("attempt_id")
+  questionId   String @map("question_id")
+  answer       Json
+  isCorrect    Boolean
+  pointsEarned Int    @map("points_earned")
+
+  // Relations
+  attempt  QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@map("question_answers")
 }
 
 // Assessment System
@@ -351,6 +415,14 @@ enum ContentType {
   TEXT
   QUIZ
   ASSIGNMENT
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  FILL_IN_BLANK
+  ESSAY
+  SHORT_ANSWER
 }
 
 enum SubmissionFormat {

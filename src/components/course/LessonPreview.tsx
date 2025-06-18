@@ -12,6 +12,8 @@ import {
   Edit,
   X,
 } from "lucide-react";
+import { QuizList } from "./QuizList";
+import type { QuizWithQuestions } from "@/types";
 
 interface LessonPreviewProps {
   lesson: {
@@ -21,9 +23,11 @@ interface LessonPreviewProps {
     contentType: string;
     videoUrl?: string;
     duration?: number;
+    quizzes?: QuizWithQuestions[];
   };
   onEdit?: () => void;
   onClose?: () => void;
+  onUpdate?: () => void;
 }
 
 const getContentTypeIcon = (type: string) => {
@@ -60,7 +64,14 @@ export default function LessonPreview({
   lesson,
   onEdit,
   onClose,
+  onUpdate,
 }: Readonly<LessonPreviewProps>) {
+  const quizzes = lesson.quizzes || [];
+
+  const handleQuizUpdate = async () => {
+    // Refresh quizzes data when needed
+    onUpdate?.();
+  };
   const Icon = getContentTypeIcon(lesson.contentType);
   const badge = getContentTypeBadge(lesson.contentType);
 
@@ -130,7 +141,6 @@ export default function LessonPreview({
             </div>
           </div>
         )}
-
         {lesson.content && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">
@@ -143,20 +153,17 @@ export default function LessonPreview({
               dangerouslySetInnerHTML={{ __html: lesson.content }}
             />
           </div>
-        )}
-
+        )}{" "}
         {lesson.contentType === "QUIZ" && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quiz Content</h3>
-            <div className="bg-muted/50 p-4 rounded-lg text-center">
-              <HelpCircle className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Quiz functionality will be available in Phase 3
-              </p>
-            </div>
+            <h3 className="text-lg font-semibold">Quiz Management</h3>
+            <QuizList
+              quizzes={quizzes}
+              lessonId={lesson.id}
+              onUpdate={handleQuizUpdate}
+            />
           </div>
         )}
-
         {lesson.contentType === "ASSIGNMENT" && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Assignment Content</h3>
@@ -168,7 +175,6 @@ export default function LessonPreview({
             </div>
           </div>
         )}
-
         {!lesson.content && lesson.contentType === "TEXT" && (
           <div className="bg-muted/50 p-8 rounded-lg text-center">
             <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />

@@ -38,9 +38,16 @@ const customJestConfig = {
   transformIgnorePatterns: [
     "node_modules/(?!(next-auth|@auth/core|@auth/core/providers)/)",
   ],
-
   // Ignore .next directory
   testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
+
+  // Fix haste map naming collision
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
+
+  // Fix jest-haste-map naming collision
+  haste: {
+    forceNodeFilesystemAPI: true,
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

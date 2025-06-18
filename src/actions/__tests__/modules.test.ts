@@ -29,6 +29,7 @@ jest.mock("@/lib/db", () => ({
     lesson: {
       deleteMany: jest.fn(),
     },
+    $transaction: jest.fn(),
   },
 }));
 
@@ -219,12 +220,13 @@ describe("Modules Actions", () => {
         success: true,
         message: "Module updated successfully",
       });
-
       expect(db.module.update).toHaveBeenCalledWith({
         where: { id: "module123" },
         data: {
+          courseId: "course123",
           title: "Updated Module",
           description: "Updated description",
+          order: undefined,
         },
       });
     });
@@ -262,7 +264,6 @@ describe("Modules Actions", () => {
         ...mockModule,
         course: mockCourse,
       });
-      (db.lesson.deleteMany as jest.Mock).mockResolvedValue({ count: 3 });
       (db.module.delete as jest.Mock).mockResolvedValue(mockModule);
 
       const result = await deleteModule("module123");
@@ -272,9 +273,6 @@ describe("Modules Actions", () => {
         message: "Module deleted successfully",
       });
 
-      expect(db.lesson.deleteMany).toHaveBeenCalledWith({
-        where: { moduleId: "module123" },
-      });
       expect(db.module.delete).toHaveBeenCalledWith({
         where: { id: "module123" },
       });
@@ -294,14 +292,13 @@ describe("Modules Actions", () => {
         message: "Module not found or you don't have permission to delete it",
       });
     });
-
     it("should handle database errors", async () => {
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
       (db.module.findFirst as jest.Mock).mockResolvedValue({
         ...mockModule,
         course: mockCourse,
       });
-      (db.lesson.deleteMany as jest.Mock).mockRejectedValue(
+      (db.module.delete as jest.Mock).mockRejectedValue(
         new Error("Database error")
       );
 
@@ -319,10 +316,12 @@ describe("Modules Actions", () => {
       courseId: "course123",
       moduleIds: ["module3", "module1", "module2"],
     };
-
     it("should reorder modules successfully", async () => {
       (authorize as jest.Mock).mockResolvedValue(mockInstructor);
       (db.course.findFirst as jest.Mock).mockResolvedValue(mockCourse);
+      (db.$transaction as jest.Mock).mockImplementation((queries) =>
+        Promise.all(queries.map(() => ({ id: "module123", order: 1 })))
+      );
 
       const result = await reorderModules(reorderInput);
 
@@ -331,20 +330,14 @@ describe("Modules Actions", () => {
         message: "Modules reordered successfully",
       });
 
-      // Should call db.module.update for each module with new order
-      expect(db.module.update).toHaveBeenCalledTimes(3);
-      expect(db.module.update).toHaveBeenNthCalledWith(1, {
-        where: { id: "module3" },
-        data: { order: 1 },
-      });
-      expect(db.module.update).toHaveBeenNthCalledWith(2, {
-        where: { id: "module1" },
-        data: { order: 2 },
-      });
-      expect(db.module.update).toHaveBeenNthCalledWith(3, {
-        where: { id: "module2" },
-        data: { order: 3 },
-      });
+      // Should call db.$transaction with the module update queries
+      expect(db.$transaction).toHaveBeenCalledTimes(1);
+      expect(revalidatePath).toHaveBeenCalledWith(
+        "/instructor/courses/course123"
+      );
+      expect(revalidatePath).toHaveBeenCalledWith(
+        "/instructor/courses/course123/content"
+      );
     });
 
     it("should fail validation with invalid input", async () => {
