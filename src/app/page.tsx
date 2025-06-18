@@ -1,11 +1,13 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import StatsSection from "@/components/home/StatsSection";
+import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
 import {
   getHomePageStats,
   formatStatNumber,
   formatSuccessRate,
 } from "@/actions/stats";
+import { cn } from "@/lib/utils";
 
 // Force dynamic rendering since we use server actions
 export const dynamic = "force-dynamic";
@@ -67,43 +69,16 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]">
-          <svg
-            className="absolute inset-0 h-full w-full opacity-30"
-            width="100%"
-            height="100%"
-            viewBox="0 0 700 700"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g>
-              <circle
-                cx="117.5"
-                cy="117.5"
-                r="317.5"
-                fill="#3b82f6"
-                fillOpacity="0.1"
-              />
-              <circle
-                cx="582.5"
-                cy="582.5"
-                r="217.5"
-                fill="#1e40af"
-                fillOpacity="0.15"
-              />
-              <circle
-                cx="350"
-                cy="350"
-                r="150"
-                fill="#60a5fa"
-                fillOpacity="0.05"
-              />
-            </g>
-          </svg>
-        </div>
-      </div>
+      {/* Animated Background Pattern */}
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.1}
+        duration={3}
+        className={cn(
+          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+        )}
+      />
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         {/* Hero Section */}

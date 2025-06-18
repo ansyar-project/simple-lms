@@ -62,7 +62,7 @@ export default function ContentTypeSelector({
             className={`p-4 border rounded-lg text-left transition-colors ${
               isSelected
                 ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50"
+                : "border-gray-200 hover:border-primary/50"
             } ${
               isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}

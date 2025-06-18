@@ -59,7 +59,7 @@ describe("ContentTypeSelector", () => {
 
       const textButton = screen.getByText("Text Content").closest("button");
       expect(textButton).not.toHaveClass("border-primary");
-      expect(textButton).toHaveClass("border-border");
+      expect(textButton).toHaveClass("border-gray-200");
     });
   });
 
@@ -189,7 +189,7 @@ describe("ContentTypeSelector", () => {
       render(<ContentTypeSelector value="TEXT" onChange={mockOnChange} />);
 
       const videoButton = screen.getByText("Video").closest("button");
-      expect(videoButton).toHaveClass("border-border");
+      expect(videoButton).toHaveClass("border-gray-200");
       expect(videoButton).toHaveClass("hover:border-primary/50");
     });
     it("should apply hover effects on enabled options", () => {
