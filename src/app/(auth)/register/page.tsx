@@ -2,7 +2,13 @@ import RegisterForm from "@/components/forms/register-form";
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+      aria-labelledby="register-title"
+    >
+      <h1 id="register-title" className="sr-only">
+        Register
+      </h1>
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]">
@@ -44,6 +50,6 @@ export default function RegisterPage() {
       <div className="relative z-10">
         <RegisterForm />
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { BookOpen, Users, Award, TrendingUp } from "lucide-react";
 import { NumberTicker } from "@/components/magicui/number-ticker";

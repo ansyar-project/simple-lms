@@ -68,7 +68,7 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
       {/* Animated Background Pattern */}
       <AnimatedGridPattern
         numSquares={30}
@@ -82,7 +82,13 @@ export default async function HomePage() {
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-20">
+        <section
+          className="container mx-auto px-4 py-20"
+          aria-labelledby="home-hero-title"
+        >
+          <h1 id="home-hero-title" className="sr-only">
+            LMS - Learning Management System
+          </h1>
           <HeroSection />
         </section>
 
@@ -90,7 +96,13 @@ export default async function HomePage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 
         {/* Features Section */}
-        <section className="container mx-auto px-4 py-24">
+        <section
+          className="container mx-auto px-4 py-24"
+          aria-labelledby="features-title"
+        >
+          <h2 id="features-title" className="sr-only">
+            Platform Features
+          </h2>
           <FeaturesSection features={features} />
         </section>
 
@@ -98,13 +110,19 @@ export default async function HomePage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent mb-4"></div>
 
         {/* Stats Section */}
-        <section className="bg-gradient-to-br from-blue-50/50 via-white to-purple-50/50 relative">
+        <section
+          className="bg-gradient-to-br from-blue-50/50 via-white to-purple-50/50 relative"
+          aria-labelledby="stats-title"
+        >
+          <h2 id="stats-title" className="sr-only">
+            Platform Statistics
+          </h2>
           <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
           <div className="relative z-10">
             <StatsSection stats={stats} />
           </div>
         </section>
       </div>
-    </div>
+    </main>
   );
 }

@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { getCourseProgress } from "@/actions/enrollment";
 import { requireCourseAccess } from "@/lib/authorization";
 import { CourseLearningInterface } from "@/components/course/CourseLearningInterface";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 // Force dynamic rendering since we use auth()
 export const dynamic = "force-dynamic";
@@ -36,11 +37,28 @@ export default async function CourseLearnPage({
     }
 
     return (
-      <CourseLearningInterface
-        courseData={courseData}
-        currentLessonId={awaitedSearchParams.lesson}
-        userId={session.user.id}
-      />
+      <main aria-labelledby="course-learn-title">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Courses", href: "/courses" },
+            {
+              label: courseData.course.title,
+              href: `/courses/${courseData.course.id}`,
+            },
+            { label: "Learn" },
+          ]}
+          className="mb-4"
+        />
+        <h1 id="course-learn-title" className="sr-only">
+          Course Learning
+        </h1>
+        <CourseLearningInterface
+          courseData={courseData}
+          currentLessonId={awaitedSearchParams.lesson}
+          userId={session.user.id}
+        />
+      </main>
     );
   } catch (error) {
     console.error("Course access error:", error);
@@ -51,4 +69,22 @@ export default async function CourseLearnPage({
 
     redirect("/courses");
   }
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { lesson?: string };
+}) {
+  let canonicalUrl = `https://simple-lms.ansyar-world.top/courses/${params.id}/learn`;
+  if (searchParams && searchParams.lesson) {
+    canonicalUrl += `?lesson=${encodeURIComponent(searchParams.lesson)}`;
+  }
+  return {
+    alternates: {
+      canonical: canonicalUrl,
+    },
+  };
 }

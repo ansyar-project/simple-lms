@@ -16,7 +16,13 @@ export default async function StudentAnalyticsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <main
+      className="container mx-auto px-4 py-8"
+      aria-labelledby="analytics-title"
+    >
+      <h1 id="analytics-title" className="sr-only">
+        Learning Analytics
+      </h1>
       <Suspense
         fallback={
           <div className="flex items-center justify-center h-96">
@@ -27,7 +33,7 @@ export default async function StudentAnalyticsPage() {
       >
         <StudentAnalyticsDashboard />
       </Suspense>
-    </div>
+    </main>
   );
 }
 

@@ -113,7 +113,8 @@ export default async function CoursesCatalog({
     },
   });
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+      <h1 className="text-3xl font-bold mb-6 sr-only">Courses Catalog</h1>
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]">
@@ -373,6 +374,6 @@ export default async function CoursesCatalog({
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

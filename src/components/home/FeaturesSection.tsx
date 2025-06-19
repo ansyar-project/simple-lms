@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { BookOpen, Users, Shield, Zap, Trophy, BarChart3 } from "lucide-react";
 import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";

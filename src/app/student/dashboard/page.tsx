@@ -50,7 +50,10 @@ export default async function StudentDashboard() {
   // Get recently enrolled courses
   const recentCourses = enrolledCourses.slice(0, 3);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+      <h1 className="sr-only" id="student-dashboard-title">
+        Student Dashboard
+      </h1>
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]">
@@ -225,6 +228,6 @@ export default async function StudentDashboard() {
           </Card>
         )}
       </div>
-    </div>
+    </main>
   );
 }

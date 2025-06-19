@@ -2,7 +2,13 @@ import LoginForm from "@/components/forms/login-form";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+      aria-labelledby="login-title"
+    >
+      <h1 id="login-title" className="sr-only">
+        Login
+      </h1>
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]">
@@ -44,6 +50,6 @@ export default function LoginPage() {
       <div className="relative z-10">
         <LoginForm />
       </div>
-    </div>
+    </main>
   );
 }

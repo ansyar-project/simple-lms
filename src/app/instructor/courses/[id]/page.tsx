@@ -36,7 +36,10 @@ export default async function CoursePage({
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <main
+      className="max-w-6xl mx-auto space-y-6"
+      aria-labelledby="instructor-course-title"
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -101,7 +104,10 @@ export default async function CoursePage({
 
               {/* Title and Description */}
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                <h1
+                  id="instructor-course-title"
+                  className="text-2xl md:text-3xl font-bold text-gray-900 mb-2"
+                >
                   {course.title}
                 </h1>
                 <p className="text-gray-600 leading-relaxed">
@@ -284,6 +290,6 @@ export default async function CoursePage({
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

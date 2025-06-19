@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { QuizWrapper } from "@/components/course/QuizWrapper";
 import type { QuizAttemptWithBasicUser } from "@/types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 interface QuizPageProps {
   params: Promise<{
@@ -84,8 +85,22 @@ export default async function QuizPage({ params }: QuizPageProps) {
     orderBy: { startedAt: "desc" },
   });
   return (
-    <div className="container mx-auto py-8">
-      {" "}
+    <main aria-labelledby="quiz-title">
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Courses", href: "/courses" },
+          {
+            label: quiz.lesson.module.course.title,
+            href: `/courses/${quiz.lesson.module.course.id}`,
+          },
+          { label: "Quiz" },
+        ]}
+        className="mb-4"
+      />
+      <h1 id="quiz-title" className="sr-only">
+        Quiz
+      </h1>
       <QuizWrapper
         quiz={quiz}
         attempts={attempts as QuizAttemptWithBasicUser[]}
@@ -93,41 +108,15 @@ export default async function QuizPage({ params }: QuizPageProps) {
           // Could add additional logic here like updating progress
         }}
       />
-    </div>
+    </main>
   );
 }
 
-export async function generateMetadata({ params }: QuizPageProps) {
-  const { id } = await params;
-  const quiz = await db.quiz.findUnique({
-    where: { id: id },
-    select: {
-      title: true,
-      description: true,
-      lesson: {
-        select: {
-          module: {
-            select: {
-              course: {
-                select: {
-                  title: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (!quiz) {
-    return {
-      title: "Quiz Not Found",
-    };
-  }
-
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const canonicalUrl = `https://simple-lms.ansyar-world.top/quiz/${params.id}`;
   return {
-    title: `${quiz.title} - ${quiz.lesson.module.course.title}`,
-    description: quiz.description ?? `Take the quiz: ${quiz.title}`,
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }

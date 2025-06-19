@@ -19,6 +19,11 @@ export default async function ContentPage({
   }
 
   return (
-    <CourseContentManager courseId={course.id} courseTitle={course.title} />
+    <main aria-labelledby="course-content-title">
+      <h1 id="course-content-title" className="sr-only">
+        Course Content Manager
+      </h1>
+      <CourseContentManager courseId={course.id} courseTitle={course.title} />
+    </main>
   );
 }
