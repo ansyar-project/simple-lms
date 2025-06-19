@@ -1,10 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { TrendingUp, Zap } from "lucide-react";
-import { TextAnimate } from "@/components/magicui/text-animate";
-import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
-import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import RippleButton from "@/components/magicui/ripple-button";
+import { TextAnimate } from "../magicui/text-animate";
+import { AnimatedShinyText } from "../magicui/animated-shiny-text";
+import { ShimmerButton } from "../magicui/shimmer-button";
+import RippleButton from "../magicui/ripple-button";
 
 export default function HeroSection() {
   return (

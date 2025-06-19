@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 import { BookOpen, Users, Shield, Zap, Trophy, BarChart3 } from "lucide-react";
 import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
@@ -52,15 +53,15 @@ const convertFeaturesToBentoCards = (features: Feature[]) => {
     const IconComponent = iconMap[feature.iconName];
     const colorScheme = colorSchemes[index % colorSchemes.length];
 
+    // Merge shadowClass into className, do not pass shadowClass as a prop
     return {
       Icon: IconComponent,
       name: feature.title,
       description: feature.description,
       href: "#",
       cta: "Learn More",
-      className: "lg:col-span-1", // All main feature cards have equal size
+      className: `lg:col-span-1 ${colorScheme.shadow}`,
       background: colorScheme.background,
-      shadowClass: colorScheme.shadow,
     };
   });
 };
@@ -177,9 +178,12 @@ export default function FeaturesSection({ features }: FeaturesProps) {
               {mainFeatureCards.map((feature) => (
                 <div
                   key={feature.name}
-                  className={`relative group transition-all duration-300 hover:shadow-lg ${feature.shadowClass} hover:scale-[1.02] hover:-translate-y-1`}
+                  className="relative group transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1"
                 >
-                  <BentoCard {...feature} className="h-full flex flex-col" />
+                  <BentoCard
+                    {...feature}
+                    className={`h-full flex flex-col ${feature.className}`}
+                  />
                 </div>
               ))}
             </BentoGrid>

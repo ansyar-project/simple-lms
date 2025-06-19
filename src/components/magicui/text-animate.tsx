@@ -297,6 +297,33 @@ const defaultItemAnimationVariants: Record<
   },
 };
 
+const resolveMotionComponent = (Component: ElementType): React.ElementType => {
+  if (typeof Component === "string") {
+    const motionTag = (motion as typeof motion)[
+      Component as keyof typeof motion
+    ];
+    if (
+      typeof motionTag === "function" ||
+      (typeof motionTag === "object" && motionTag !== null)
+    ) {
+      return motionTag as React.ElementType;
+    } else {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          `[TextAnimate] Unsupported HTML tag for Framer Motion: '${Component}'. Rendering without animation.`
+        );
+      }
+      return Component;
+    }
+  } else if (typeof Component === "function" || typeof Component === "object") {
+    return motion(Component);
+  }
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(`[TextAnimate] Invalid component type:`, Component);
+  }
+  return "span"; // fallback to a safe tag
+};
+
 const TextAnimateBase = ({
   children,
   delay = 0,
@@ -311,7 +338,9 @@ const TextAnimateBase = ({
   animation = "fadeIn",
   ...props
 }: TextAnimateProps) => {
-  const MotionComponent = motion.create(Component);
+  const MotionComponent = resolveMotionComponent(
+    Component
+  ) as React.ElementType;
 
   let segments: string[] = [];
   switch (by) {
@@ -353,27 +382,27 @@ const TextAnimateBase = ({
         item: variants,
       }
     : animation
-      ? {
-          container: {
-            ...defaultItemAnimationVariants[animation].container,
-            show: {
-              ...defaultItemAnimationVariants[animation].container.show,
-              transition: {
-                delayChildren: delay,
-                staggerChildren: duration / segments.length,
-              },
-            },
-            exit: {
-              ...defaultItemAnimationVariants[animation].container.exit,
-              transition: {
-                staggerChildren: duration / segments.length,
-                staggerDirection: -1,
-              },
+    ? {
+        container: {
+          ...defaultItemAnimationVariants[animation].container,
+          show: {
+            ...defaultItemAnimationVariants[animation].container.show,
+            transition: {
+              delayChildren: delay,
+              staggerChildren: duration / segments.length,
             },
           },
-          item: defaultItemAnimationVariants[animation].item,
-        }
-      : { container: defaultContainerVariants, item: defaultItemVariants };
+          exit: {
+            ...defaultItemAnimationVariants[animation].container.exit,
+            transition: {
+              staggerChildren: duration / segments.length,
+              staggerDirection: -1,
+            },
+          },
+        },
+        item: defaultItemAnimationVariants[animation].item,
+      }
+    : { container: defaultContainerVariants, item: defaultItemVariants };
 
   return (
     <AnimatePresence mode="popLayout">
@@ -395,7 +424,7 @@ const TextAnimateBase = ({
             className={cn(
               by === "line" ? "block" : "inline-block whitespace-pre",
               by === "character" && "",
-              segmentClassName,
+              segmentClassName
             )}
           >
             {segment}

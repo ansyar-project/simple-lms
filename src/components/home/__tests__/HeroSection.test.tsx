@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen } from "@testing-library/react";
 import HeroSection from "../HeroSection";
 
@@ -23,19 +24,27 @@ jest.mock("next/navigation", () => ({
 }));
 
 // Mock framer-motion
-jest.mock("framer-motion", () => ({
-  motion: {
-    div: ({ children, ...props }: React.ComponentProps<"div">) => (
-      <div {...props}>{children}</div>
-    ),
-    button: ({ children, ...props }: React.ComponentProps<"button">) => (
-      <button {...props}>{children}</button>
-    ),
-    p: ({ children, ...props }: React.ComponentProps<"p">) => (
-      <p {...props}>{children}</p>
-    ),
-  },
-}));
+jest.mock("framer-motion", () => {
+  // Proxy to handle any motion.<tag>
+  const motionProxy = new Proxy(
+    {},
+    {
+      get: (_target, tag) => {
+        // Only allow string tags, fallback to 'div' for others
+        const tagName = typeof tag === "string" ? tag : "div";
+        return ({
+          children,
+          ...props
+        }: {
+          children?: React.ReactNode;
+        } & React.HTMLAttributes<HTMLElement>) => {
+          return React.createElement(tagName, props, children);
+        };
+      },
+    }
+  );
+  return { motion: motionProxy };
+});
 
 // Mock Lucide React icons
 jest.mock("lucide-react", () => ({
