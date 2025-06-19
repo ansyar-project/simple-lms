@@ -2,6 +2,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getInstructorDashboard } from "@/actions/courses";
 import { BookOpen, Users, DollarSign, PlusCircle } from "lucide-react";
+import {
+  AnimatedList,
+  AnimatedListItem,
+} from "@/components/magicui/animated-list";
+import { File, Folder, Tree } from "@/components/magicui/file-tree";
+import { ProgressChart } from "@/components/analytics/Charts";
 
 // Force dynamic rendering since we use auth()
 export const dynamic = "force-dynamic";
@@ -213,33 +219,34 @@ export default async function InstructorDashboardPage() {
                     No courses yet. Create your first course!
                   </p>
                 ) : (
-                  dashboardData.recentCourses.map((course) => (
-                    <div
-                      key={course.id}
-                      className="flex items-center justify-between p-3 border border-blue-100 rounded-lg hover:bg-white/50 transition-all duration-300"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <Link href={`/instructor/courses/${course.id}`}>
-                          <h3 className="font-medium text-gray-900 truncate hover:text-blue-600">
-                            {course.title}
-                          </h3>
-                        </Link>{" "}
-                        <p className="text-sm text-gray-500">
-                          {course._count?.modules ?? 0} modules •{" "}
-                          {course._count?.enrollments ?? 0} students
-                        </p>
-                      </div>{" "}
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeStyles(
-                            course.status
-                          )}`}
-                        >
-                          {course.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                  <AnimatedList>
+                    {dashboardData.recentCourses.map((course) => (
+                      <AnimatedListItem key={course.id}>
+                        <div className="flex items-center justify-between p-3 border border-blue-100 rounded-lg hover:bg-white/50 transition-all duration-300">
+                          <div className="flex-1 min-w-0">
+                            <Link href={`/instructor/courses/${course.id}`}>
+                              <h3 className="font-medium text-gray-900 truncate hover:text-blue-600">
+                                {course.title}
+                              </h3>
+                            </Link>{" "}
+                            <p className="text-sm text-gray-500">
+                              {course._count?.modules ?? 0} modules {" "}
+                              {course._count?.enrollments ?? 0} students
+                            </p>
+                          </div>{" "}
+                          <div className="flex items-center space-x-2">
+                            <span
+                              className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeStyles(
+                                course.status
+                              )}`}
+                            >
+                              {course.status}
+                            </span>
+                          </div>
+                        </div>
+                      </AnimatedListItem>
+                    ))}
+                  </AnimatedList>
                 )}
               </div>
             </div>
@@ -282,6 +289,56 @@ export default async function InstructorDashboardPage() {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Course Content Structure and Analytics Placeholders */}
+          <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 mt-8">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4">
+              Course Content Structure
+            </h2>
+            {/* Magic UI File Tree visualization */}
+            <Tree className="w-full max-w-md mx-auto">
+              <Folder element="Courses">
+                {dashboardData.recentCourses.map((course) => (
+                  <Folder key={course.id} element={course.title}>
+                    <File value={course.id}>
+                      modules: {course._count?.modules ?? 0}
+                    </File>
+                    <File value={course.id + "-students"}>
+                      students: {course._count?.enrollments ?? 0}
+                    </File>
+                  </Folder>
+                ))}
+              </Folder>
+            </Tree>
+          </div>
+          <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 mt-8">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4">
+              Analytics
+            </h2>
+            {/* Course Enrollment Trends Chart (real data) */}
+            <ProgressChart
+              title="Course Enrollment Trends"
+              data={dashboardData.recentEnrollments.reduce(
+                (acc, enrollment) => {
+                  const date = new Date(enrollment.enrolledAt)
+                    .toISOString()
+                    .split("T")[0];
+                  const found = acc.find((item) => item.date === date);
+                  if (found) {
+                    found.coursesStudied += 1;
+                  } else {
+                    acc.push({ date, coursesStudied: 1 });
+                  }
+                  return acc;
+                },
+                [] as { date: string; coursesStudied: number }[]
+              )}
+              dataKey="coursesStudied"
+              color="#2563eb"
+              type="line"
+              height={280}
+            />
           </div>
         </div>
       </div>
