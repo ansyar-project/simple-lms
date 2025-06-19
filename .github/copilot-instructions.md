@@ -3,7 +3,7 @@
 
 ## General Guidelines
 - **Always use context7** to understand the current project structure, coding style, and requirements.
-
+- **Always store file relations** in memory to maintain consistency across tasks.
 
 ## Core Workflow Principles
 - **Always provide a plan before writing code**, especially for complex features or components

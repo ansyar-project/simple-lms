@@ -80,15 +80,30 @@ export default async function HomePage() {
         )}
       />
 
-      <div className="container mx-auto px-4 py-16 relative z-10">
+      <div className="relative z-10">
         {/* Hero Section */}
-        <HeroSection />
+        <section className="container mx-auto px-4 py-20">
+          <HeroSection />
+        </section>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 
         {/* Features Section */}
-        <FeaturesSection features={features} />
+        <section className="container mx-auto px-4 py-24">
+          <FeaturesSection features={features} />
+        </section>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent mb-4"></div>
 
         {/* Stats Section */}
-        <StatsSection stats={stats} />
+        <section className="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative">
+          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="relative z-10">
+            <StatsSection stats={stats} />
+          </div>
+        </section>
       </div>
     </div>
   );

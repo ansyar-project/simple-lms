@@ -41,7 +41,7 @@ const convertFeaturesToBentoCards = (features: Feature[]) => {
         <div
           className={`absolute inset-0 bg-gradient-to-br ${feature.gradient
             .replace("from-", "from-")
-            .replace("to-", "to-")}/20`}
+            .replace("to-", "to-")}/10`}
         />
       ),
     };
@@ -130,30 +130,41 @@ export default function FeaturesSection({ features }: FeaturesProps) {
             the learning ecosystem
           </AnimatedShinyText>
         </div>
-      </div>
+      </div>{" "}
       {/* Main Features Bento Grid */}
-      <div className="mb-16">
-        <BentoGrid className="max-w-6xl mx-auto">
+      <div className="mb-20">
+        <BentoGrid className="max-w-6xl mx-auto equal-height-cards">
           {mainFeatureCards.map((feature) => (
-            <BentoCard key={feature.name} {...feature} />
+            <div
+              key={feature.name}
+              className="relative group transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:-translate-y-1 h-full"
+            >
+              <BentoCard {...feature} className="h-full flex flex-col" />
+            </div>
           ))}
         </BentoGrid>
       </div>{" "}
       {/* Additional Features Bento Grid */}
-      <div className="mb-16 w-full">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+      <div className="mb-20 w-full">
+        <div className="text-center mb-12">
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Advanced Features
           </h3>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             Discover more powerful tools to enhance your learning experience
           </p>
         </div>
         <div className="flex justify-center w-full">
           <div className="max-w-4xl w-full">
+            {" "}
             <BentoGrid className="mx-auto">
               {additionalFeatures.map((feature) => (
-                <BentoCard key={feature.name} {...feature} />
+                <div
+                  key={feature.name}
+                  className="relative group transition-all duration-300 hover:shadow-md hover:shadow-gray-100/50 hover:scale-[1.02]"
+                >
+                  <BentoCard {...feature} />
+                </div>
               ))}
             </BentoGrid>
           </div>
@@ -180,9 +191,8 @@ export default function FeaturesSection({ features }: FeaturesProps) {
               and milestones. Track your progress and celebrate your learning
               achievements as you advance through your courses.
             </p>
-          </div>
-
-          <div className="relative h-[300px] overflow-hidden rounded-lg border bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm">
+          </div>{" "}
+          <div className="relative h-[300px] overflow-hidden rounded-lg border bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm group transition-all duration-300 hover:shadow-md hover:border-gray-300/50">
             <AnimatedList>
               {achievements.map((item) => (
                 <div
