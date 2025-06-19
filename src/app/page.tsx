@@ -98,8 +98,8 @@ export default async function HomePage() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent mb-4"></div>
 
         {/* Stats Section */}
-        <section className="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative">
-          <div className="absolute inset-0 bg-black/40"></div>
+        <section className="bg-gradient-to-br from-blue-50/50 via-white to-purple-50/50 relative">
+          <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
           <div className="relative z-10">
             <StatsSection stats={stats} />
           </div>

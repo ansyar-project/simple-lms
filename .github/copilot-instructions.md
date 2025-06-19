@@ -2,7 +2,7 @@
 *Instructions for generating consistent, high-quality code that follows project standards and best practices.*
 
 ## General Guidelines
-- **Always use context7** to understand the current project structure, coding style, and requirements.
+- **Always use context7** to get latest documentation of dependencies.
 - **Always store file relations** in memory to maintain consistency across tasks.
 
 ## Core Workflow Principles

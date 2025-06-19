@@ -28,8 +28,32 @@ const iconMap = {
 
 // Convert main features to bento card format
 const convertFeaturesToBentoCards = (features: Feature[]) => {
-  return features.map((feature) => {
+  // Define vibrant color schemes for each card
+  const colorSchemes = [
+    {
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20" />
+      ),
+      shadow: "hover:shadow-blue-200/50 dark:hover:shadow-blue-900/50",
+    },
+    {
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20" />
+      ),
+      shadow: "hover:shadow-emerald-200/50 dark:hover:shadow-emerald-900/50",
+    },
+    {
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-purple-500/20" />
+      ),
+      shadow: "hover:shadow-violet-200/50 dark:hover:shadow-violet-900/50",
+    },
+  ];
+
+  return features.map((feature, index) => {
     const IconComponent = iconMap[feature.iconName];
+    const colorScheme = colorSchemes[index % colorSchemes.length];
+
     return {
       Icon: IconComponent,
       name: feature.title,
@@ -37,13 +61,8 @@ const convertFeaturesToBentoCards = (features: Feature[]) => {
       href: "#",
       cta: "Learn More",
       className: "lg:col-span-1", // All main feature cards have equal size
-      background: (
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${feature.gradient
-            .replace("from-", "from-")
-            .replace("to-", "to-")}/10`}
-        />
-      ),
+      background: colorScheme.background,
+      shadowClass: colorScheme.shadow,
     };
   });
 };
@@ -129,25 +148,62 @@ export default function FeaturesSection({ features }: FeaturesProps) {
             Our platform provides comprehensive tools for every type of user in
             the learning ecosystem
           </AnimatedShinyText>
-        </div>
+        </div>{" "}
       </div>{" "}
       {/* Main Features Bento Grid */}
-      <div className="mb-20">
-        <BentoGrid className="max-w-6xl mx-auto equal-height-cards">
-          {mainFeatureCards.map((feature) => (
-            <div
-              key={feature.name}
-              className="relative group transition-all duration-300 hover:shadow-lg hover:shadow-blue-100/50 hover:-translate-y-1 h-full"
-            >
-              <BentoCard {...feature} className="h-full flex flex-col" />
-            </div>
-          ))}
-        </BentoGrid>
-      </div>{" "}
-      {/* Additional Features Bento Grid */}
       <div className="mb-20 w-full">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-6 w-6 text-blue-500" />
+              <Badge
+                variant="secondary"
+                className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+              >
+                Core Platform
+              </Badge>
+            </div>
+          </div>
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            Core Features
+          </h3>
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
+            Essential tools designed for students, instructors, and
+            administrators
+          </p>
+        </div>
+        <div className="flex justify-center w-full">
+          <div className="max-w-6xl w-full">
+            {" "}
+            <BentoGrid className="mx-auto equal-height-cards">
+              {mainFeatureCards.map((feature) => (
+                <div
+                  key={feature.name}
+                  className={`relative group transition-all duration-300 hover:shadow-lg ${feature.shadowClass} hover:scale-[1.02] hover:-translate-y-1`}
+                >
+                  <BentoCard {...feature} className="h-full flex flex-col" />
+                </div>
+              ))}
+            </BentoGrid>
+          </div>
+        </div>
+      </div>
+      {/* Additional Features Bento Grid */}
+      <div className="mb-20 w-full">
+        {" "}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <Zap className="h-6 w-6 text-orange-500" />
+              <Badge
+                variant="secondary"
+                className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+              >
+                Premium Tools
+              </Badge>
+            </div>
+          </div>
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent mb-4">
             Advanced Features
           </h3>
           <p className="text-gray-600 dark:text-gray-300 text-lg">
@@ -161,7 +217,7 @@ export default function FeaturesSection({ features }: FeaturesProps) {
               {additionalFeatures.map((feature) => (
                 <div
                   key={feature.name}
-                  className="relative group transition-all duration-300 hover:shadow-md hover:shadow-gray-100/50 hover:scale-[1.02]"
+                  className="relative group transition-all duration-300 hover:shadow-lg hover:shadow-orange-200/50 dark:hover:shadow-orange-900/50 hover:scale-[1.02] hover:-translate-y-1"
                 >
                   <BentoCard {...feature} />
                 </div>
