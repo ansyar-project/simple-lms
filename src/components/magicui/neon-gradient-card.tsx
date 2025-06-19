@@ -16,7 +16,7 @@ interface NeonColorsProps {
   secondColor: string;
 }
 
-interface NeonGradientCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface NeonGradientCardProps {
   /**
    * @default <div />
    * @type ReactElement
@@ -29,7 +29,7 @@ interface NeonGradientCardProps extends React.HTMLAttributes<HTMLDivElement> {
    * @type string
    * @description
    * The className of the card
-   * */
+   */
   className?: string;
 
   /**
@@ -58,11 +58,16 @@ interface NeonGradientCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
   /**
    * @default "{ firstColor: '#ff00aa', secondColor: '#00FFF1' }"
-   * @type string
+   * @type NeonColorsProps
    * @description
    * The colors of the neon gradient
-   * */
+   */
   neonColors?: NeonColorsProps;
+
+  /**
+   * Additional props for the card container (should be HTMLDivElement attributes)
+   */
+  [key: string]: unknown;
 }
 
 export const NeonGradientCard: React.FC<NeonGradientCardProps> = ({

@@ -53,7 +53,10 @@ describe("HeroSection", () => {
 
     // Check main heading
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
-    expect(screen.getByText("Welcome to Simple LMS")).toBeInTheDocument();
+    // Use a flexible matcher to find heading text split across spans
+    expect(
+      screen.getByRole("heading", { level: 1, name: /welcome to simple lms/i })
+    ).toBeInTheDocument();
 
     // Check description
     expect(

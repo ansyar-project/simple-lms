@@ -204,6 +204,7 @@ export default async function StudentDashboard() {
                   onView={() => {
                     window.location.href = `/courses/${enrollment.course.id}`;
                   }}
+                  featured={enrollment.progress === 100}
                 />
               ))}
             </div>

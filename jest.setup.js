@@ -144,6 +144,16 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }));
 
+// Mock IntersectionObserver for Framer Motion and animated components
+global.IntersectionObserver =
+  global.IntersectionObserver ||
+  jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+    takeRecords: jest.fn(),
+  }));
+
 // Mock window.confirm for delete operations (only in jsdom environment)
 if (typeof window !== "undefined") {
   Object.defineProperty(window, "confirm", {
