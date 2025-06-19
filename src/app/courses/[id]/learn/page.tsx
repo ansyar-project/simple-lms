@@ -75,12 +75,14 @@ export async function generateMetadata({
   params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams: { lesson?: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ lesson?: string }>;
 }) {
-  let canonicalUrl = `https://simple-lms.ansyar-world.top/courses/${params.id}/learn`;
-  if (searchParams && searchParams.lesson) {
-    canonicalUrl += `?lesson=${encodeURIComponent(searchParams.lesson)}`;
+  const awaitedParams = await params;
+  const awaitedSearchParams = await searchParams;
+  let canonicalUrl = `https://simple-lms.ansyar-world.top/courses/${awaitedParams.id}/learn`;
+  if (awaitedSearchParams && awaitedSearchParams.lesson) {
+    canonicalUrl += `?lesson=${encodeURIComponent(awaitedSearchParams.lesson)}`;
   }
   return {
     alternates: {

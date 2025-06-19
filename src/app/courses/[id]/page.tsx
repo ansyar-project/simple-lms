@@ -371,8 +371,13 @@ export default async function CourseDetailsPage({
   );
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const canonicalUrl = `https://simple-lms.ansyar-world.top/courses/${params.id}`;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const awaitedParams = await params;
+  const canonicalUrl = `https://simple-lms.ansyar-world.top/courses/${awaitedParams.id}`;
   return {
     alternates: {
       canonical: canonicalUrl,
