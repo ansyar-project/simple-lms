@@ -10,6 +10,9 @@ import {
   QuizAttempt,
   QuestionAnswer,
   QuestionType,
+  Assignment,
+  Submission,
+  SubmissionFormat,
 } from "@prisma/client";
 
 export type {
@@ -24,6 +27,9 @@ export type {
   QuizAttempt,
   QuestionAnswer,
   QuestionType,
+  Assignment,
+  Submission,
+  SubmissionFormat,
 };
 
 export interface CourseWithDetails extends Course {
@@ -156,4 +162,13 @@ export interface QuizResult {
   timeSpent: number;
   answers: QuestionAnswer[];
   feedback?: string;
+}
+
+// Assignment System Types
+export interface AssignmentWithSubmissions extends Assignment {
+  submissions: Submission[];
+}
+
+export interface SubmissionWithUser extends Submission {
+  user: User;
 }

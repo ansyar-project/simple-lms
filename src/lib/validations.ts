@@ -190,6 +190,22 @@ export const courseSearchSchema = z.object({
   limit: z.number().int().min(1).max(50).default(10),
 });
 
+// Assignment and Submission validation schemas
+export const assignmentSchema = z.object({
+  lessonId: z.string().optional(),
+  title: z.string().min(3),
+  description: z.string().min(3),
+  dueDate: z.date().optional(),
+  maxScore: z.number().min(1),
+  submissionFormat: z.enum(["TEXT", "FILE", "BOTH"]),
+});
+
+export const submissionSchema = z.object({
+  assignmentId: z.string(),
+  content: z.string().optional(),
+  fileUrl: z.string().optional(),
+});
+
 // Types derived from schemas
 export type CreateCourseInput = z.infer<typeof createCourseSchema>;
 export type UpdateCourseInput = z.infer<typeof updateCourseSchema>;
@@ -209,3 +225,5 @@ export type UpdateQuestionInput = z.infer<typeof updateQuestionSchema>;
 export type SubmitQuizInput = z.infer<typeof submitQuizSchema>;
 export type QuizAttemptInput = z.infer<typeof quizAttemptSchema>;
 export type ReorderQuestionsInput = z.infer<typeof reorderQuestionsSchema>;
+export type AssignmentInput = z.infer<typeof assignmentSchema>;
+export type SubmissionInput = z.infer<typeof submissionSchema>;
