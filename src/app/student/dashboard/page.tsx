@@ -8,11 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
-import { NumberTicker } from "@/components/magicui/number-ticker";
 import { ModernCourseCard } from "@/components/course/ModernCourseCard";
-import { BookOpen, TrendingUp, Trophy, Clock } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DashboardWidgetsSheet } from "@/components/dashboard/DashboardWidgetsSheet";
+import {
+  DashboardBentoGrid,
+  StatsBentoItem,
+} from "@/components/dashboard/DashboardBentoGrid";
 
 // Force dynamic rendering since we use auth()
 export const dynamic = "force-dynamic";
@@ -93,6 +96,7 @@ export default async function StudentDashboard() {
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
+        {" "}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 bg-clip-text text-transparent mb-4">
             Welcome back, {session.user.name}!
@@ -100,73 +104,81 @@ export default async function StudentDashboard() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Continue your learning journey and track your progress
           </p>
-        </div>{" "}
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <NeonGradientCard className="bg-white/70 border-blue-100">
-            <div className="flex flex-row items-center justify-between pb-2">
-              <span className="text-sm font-medium text-blue-900">
-                Total Courses
-              </span>
-              <BookOpen className="h-4 w-4 text-blue-600" />
-            </div>
-            <div className="flex flex-col items-center">
-              <NumberTicker
-                value={totalCourses}
-                className="text-2xl font-bold text-blue-600"
-              />
-              <p className="text-xs text-muted-foreground">Enrolled courses</p>
-            </div>
-          </NeonGradientCard>
 
-          <NeonGradientCard className="bg-white/70 border-blue-100">
-            <div className="flex flex-row items-center justify-between pb-2">
-              <span className="text-sm font-medium text-blue-900">
-                In Progress
-              </span>
-              <TrendingUp className="h-4 w-4 text-blue-600" />
-            </div>
-            <div className="flex flex-col items-center">
-              <NumberTicker
-                value={inProgressCourses}
-                className="text-2xl font-bold text-blue-600"
-              />
-              <p className="text-xs text-muted-foreground">Active learning</p>
-            </div>
-          </NeonGradientCard>
-
-          <NeonGradientCard className="bg-white/70 border-blue-100">
-            <div className="flex flex-row items-center justify-between pb-2">
-              <span className="text-sm font-medium text-blue-900">
-                Completed
-              </span>
-              <Trophy className="h-4 w-4 text-blue-600" />
-            </div>
-            <div className="flex flex-col items-center">
-              <NumberTicker
-                value={completedCourses}
-                className="text-2xl font-bold text-blue-600"
-              />
-              <p className="text-xs text-muted-foreground">Courses finished</p>
-            </div>
-          </NeonGradientCard>
-
-          <NeonGradientCard className="bg-white/70 border-blue-100">
-            <div className="flex flex-row items-center justify-between pb-2">
-              <span className="text-sm font-medium text-blue-900">
-                Total Lessons
-              </span>
-              <Clock className="h-4 w-4 text-blue-600" />
-            </div>
-            <div className="flex flex-col items-center">
-              <NumberTicker
-                value={totalLessons}
-                className="text-2xl font-bold text-blue-600"
-              />
-              <p className="text-xs text-muted-foreground">Learning content</p>
-            </div>
-          </NeonGradientCard>
+          {/* Mobile Dashboard Menu */}
+          <div className="mt-6 flex justify-center md:hidden">
+            <DashboardWidgetsSheet
+              title="Dashboard Overview"
+              description="Quick access to your learning stats and progress"
+              triggerLabel="View Stats"
+            >
+              {" "}
+              <div className="space-y-4">
+                <StatsBentoItem
+                  title="Total Courses"
+                  value={totalCourses}
+                  icon="BookOpen"
+                  description="Enrolled courses"
+                  trend="neutral"
+                />
+                <StatsBentoItem
+                  title="In Progress"
+                  value={inProgressCourses}
+                  icon="TrendingUp"
+                  description="Active learning"
+                  trend="up"
+                />
+                <StatsBentoItem
+                  title="Completed"
+                  value={completedCourses}
+                  icon="Trophy"
+                  description="Courses finished"
+                  trend="up"
+                />
+                <StatsBentoItem
+                  title="Total Lessons"
+                  value={totalLessons}
+                  icon="Clock"
+                  description="Learning content"
+                  trend="neutral"
+                />
+              </div>
+            </DashboardWidgetsSheet>
+          </div>
         </div>
+        {/* Desktop Bento Grid Layout */}{" "}
+        <div className="hidden md:block mb-8">
+          <DashboardBentoGrid>
+            <StatsBentoItem
+              title="Total Courses"
+              value={totalCourses}
+              icon="BookOpen"
+              description="Enrolled courses"
+              trend="neutral"
+            />
+            <StatsBentoItem
+              title="In Progress"
+              value={inProgressCourses}
+              icon="TrendingUp"
+              description="Active learning"
+              trend="up"
+            />
+            <StatsBentoItem
+              title="Completed"
+              value={completedCourses}
+              icon="Trophy"
+              description="Courses finished"
+              trend="up"
+            />
+            <StatsBentoItem
+              title="Total Lessons"
+              value={totalLessons}
+              icon="Clock"
+              description="Learning content"
+              trend="neutral"
+            />
+          </DashboardBentoGrid>
+        </div>{" "}
         {/* Recent Courses */}
         {recentCourses.length > 0 && (
           <div className="mb-8">
@@ -183,8 +195,47 @@ export default async function StudentDashboard() {
                 </Button>
               </Link>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Mobile: Show in Sheet */}
+            <div className="md:hidden">
+              <DashboardWidgetsSheet
+                title="Recent Courses"
+                description="Continue your learning journey"
+                triggerLabel="View Courses"
+              >
+                <div className="space-y-4">
+                  {recentCourses.map((enrollment) => (
+                    <div
+                      key={enrollment.id}
+                      className="p-4 bg-white/80 rounded-lg border border-blue-200"
+                    >
+                      <h3 className="font-semibold text-blue-900 mb-2">
+                        {enrollment.course.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        Progress: {enrollment.progress}%
+                      </p>
+                      <div className="flex gap-2">
+                        {" "}
+                        <Link
+                          href={`/courses/${enrollment.course.id}/learn`}
+                          className="inline-flex h-8 items-center justify-center rounded-md bg-blue-600 px-3 text-xs font-medium text-white shadow transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          Continue
+                        </Link>
+                        <Link
+                          href={`/courses/${enrollment.course.id}`}
+                          className="inline-flex h-8 items-center justify-center rounded-md border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                        >
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </DashboardWidgetsSheet>
+            </div>
+            {/* Desktop: Bento Grid Layout */}{" "}
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recentCourses.map((enrollment) => (
                 <ModernCourseCard
                   key={enrollment.id}
@@ -198,12 +249,7 @@ export default async function StudentDashboard() {
                       ? new Date(enrollment.completedAt)
                       : undefined
                   }
-                  onStart={() => {
-                    window.location.href = `/courses/${enrollment.course.id}/learn`;
-                  }}
-                  onView={() => {
-                    window.location.href = `/courses/${enrollment.course.id}`;
-                  }}
+                  courseId={enrollment.course.id}
                   featured={enrollment.progress === 100}
                 />
               ))}

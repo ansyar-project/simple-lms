@@ -69,10 +69,10 @@ describe("CourseLearningInterface", () => {
       enrolledAt: new Date("2024-01-01"),
       completedAt: null,
       progress: 50,
-    },
-    course: {
+    },    course: {
       id: "course_1",
       title: "Introduction to React",
+      price: 99.99,
       modules: [
         {
           id: "module_1",

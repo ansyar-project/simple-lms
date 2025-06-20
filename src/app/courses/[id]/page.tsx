@@ -23,6 +23,7 @@ import {
 import Link from "next/link";
 import { CourseEnrollButton } from "@/components/course/CourseEnrollButton";
 import { formatDistanceToNow } from "date-fns";
+import { serializeCourse } from "@/lib/utils";
 import CourseStructuredData from "@/components/courses/CourseStructuredData";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
@@ -38,7 +39,7 @@ export default async function CourseDetailsPage({
 }: Readonly<CourseDetailsPageProps>) {
   const { id } = await params;
   const session = await auth();
-  const course = await db.course.findUnique({
+  const courseRaw = await db.course.findUnique({
     where: { id, status: "PUBLISHED" },
     include: {
       instructor: {
@@ -75,9 +76,12 @@ export default async function CourseDetailsPage({
     },
   });
 
-  if (!course) {
+  if (!courseRaw) {
     notFound();
   }
+
+  // Serialize course for client components
+  const course = serializeCourse(courseRaw);
   // Get enrollment status
   const enrollmentStatus = await getEnrollmentStatus(id);
 
@@ -104,14 +108,7 @@ export default async function CourseDetailsPage({
           description: course.description,
           category: { name: course.category.name },
           instructor: { name: course.instructor.name ?? "Unknown" },
-          price:
-            course.price &&
-            typeof course.price === "object" &&
-            "toNumber" in course.price
-              ? course.price.toNumber()
-              : typeof course.price === "number"
-              ? course.price
-              : null,
+          price: course.price ?? 0,
           modules: course.modules.map((m) => ({
             lessons: m.lessons.map((l) => ({
               title: l.title,

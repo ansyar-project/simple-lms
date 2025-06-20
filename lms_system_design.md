@@ -77,7 +77,7 @@ The LMS development is structured in multiple phases to ensure systematic implem
 - ✅ **Lesson Management**: Rich content lessons with multiple content types
 - ✅ **Content Organization**: Drag-and-drop reordering for modules and lessons
 - ✅ **Rich Text Editor**: TipTap integration for lesson content creation
-- ✅ **Content Types**: Support for text, video, quiz, and assignment lessons
+- ✅ **Content Types**: Support for text, video, quiz, and assignment lessons (quiz enabled June 21, 2025)
 - ✅ **Module Progress**: Basic completion tracking at module level
 
 **Technical Implementation Completed:**
@@ -497,7 +497,7 @@ Upon completion of Phase 3, the LMS will support:
 - **Module System**: Full module creation, editing, and organization
 - **Lesson Management**: Rich text lessons with TipTap editor
 - **Content Organization**: Drag-and-drop reordering for modules
-- **Content Types**: Support for text, video, quiz, and assignment types
+- **Content Types**: Support for text, video, quiz, and assignment types (quiz fully enabled)
 - **Instructor Dashboard**: Course management interface with statistics
 
 ### 🔄 Currently in Development:

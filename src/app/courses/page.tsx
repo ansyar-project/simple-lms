@@ -15,6 +15,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CourseEnrollButton } from "@/components/course/CourseEnrollButton";
 import { CourseStatus } from "@prisma/client";
+import { serializeCourses } from "@/lib/utils";
 
 // Force dynamic rendering since we use auth()
 export const dynamic = "force-dynamic";
@@ -51,9 +52,8 @@ export default async function CoursesCatalog({
       slug: category,
     };
   }
-
   // Fetch published courses
-  const courses = await db.course.findMany({
+  const coursesRaw = await db.course.findMany({
     where: {
       status: CourseStatus.PUBLISHED,
       ...whereClause,
@@ -93,6 +93,9 @@ export default async function CoursesCatalog({
       createdAt: "desc",
     },
   });
+
+  // Serialize courses for client components
+  const courses = serializeCourses(coursesRaw);
 
   // Get user enrollments if logged in
   let userEnrollments: string[] = [];
@@ -287,7 +290,6 @@ export default async function CoursesCatalog({
                           </div>
                         </div>
                       </div>
-
                       {/* Instructor */}
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
@@ -309,17 +311,15 @@ export default async function CoursesCatalog({
                         <span className="font-medium">
                           {course.instructor.name}
                         </span>
-                      </div>
-
+                      </div>{" "}
                       {/* Price and Action */}
                       <div className="flex items-center justify-between">
                         <span className="text-lg font-bold text-green-600">
-                          {!course.price || course.price.toNumber() === 0
+                          {!course.price || course.price === 0
                             ? "Free"
-                            : `$${course.price.toString()}`}
+                            : `$${course.price}`}
                         </span>
                       </div>
-
                       {/* Enroll Button */}
                       <div className="space-y-2">
                         {userEnrollments.includes(course.id) ? (

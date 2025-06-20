@@ -628,12 +628,14 @@ export async function getCourseById(
     // Check permissions
     if (user.role === "INSTRUCTOR" && course.instructorId !== user.id) {
       return null;
-    }
-
-    // Convert Decimal to number for client components
+    } // Convert Decimal to number for client components
     const serializedCourse = {
       ...course,
-      price: course.price ? Number(course.price) : null,
+      price: course.price
+        ? typeof course.price === "object" && "toNumber" in course.price
+          ? course.price.toNumber()
+          : Number(course.price)
+        : null,
     };
 
     return serializedCourse as CourseWithDetails;

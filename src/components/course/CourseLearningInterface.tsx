@@ -20,9 +20,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AnimatedCircularProgressBar } from "@/components/magicui/animated-circular-progress-bar";
 import { ScrollProgress } from "@/components/magicui/scroll-progress";
-
-// Placeholder for future Magic UI scroll-progress
-// import { ScrollProgress } from '@/components/magicui/scroll-progress'
+import { BoxReveal } from "@/components/magicui/box-reveal";
+import { TextAnimate } from "@/components/magicui/text-animate";
 
 interface CourseData {
   enrollment: {
@@ -338,11 +337,16 @@ export function CourseLearningInterface({
           <div className="flex-1 p-6">
             {currentLesson ? (
               <Card className="max-w-4xl mx-auto">
+                {" "}
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl">
-                      {currentLesson.title}
-                    </CardTitle>
+                    <BoxReveal boxColor="#2563eb">
+                      <CardTitle className="text-2xl text-blue-900">
+                        <TextAnimate animation="blurInUp" by="word">
+                          {currentLesson.title}
+                        </TextAnimate>
+                      </CardTitle>
+                    </BoxReveal>
                     <Badge
                       variant={
                         lessonStates[currentLesson.id]?.completed
@@ -351,7 +355,7 @@ export function CourseLearningInterface({
                       }
                       className={
                         lessonStates[currentLesson.id]?.completed
-                          ? "bg-green-500"
+                          ? "bg-blue-500 hover:bg-blue-600"
                           : ""
                       }
                     >
@@ -361,37 +365,42 @@ export function CourseLearningInterface({
                     </Badge>
                   </div>
                   {currentLesson.duration && (
-                    <div className="flex items-center gap-1 text-gray-600">
+                    <div className="flex items-center gap-1 text-blue-600">
                       <Clock className="h-4 w-4" />
                       <span>{currentLesson.duration} minutes</span>
                     </div>
                   )}
-                </CardHeader>
+                </CardHeader>{" "}
                 <CardContent>
                   {/* Lesson content would go here */}
                   <div className="prose max-w-none">
-                    <p className="text-gray-600 mb-6">
-                      {
-                        "Lesson content will be displayed here. This could include video, text, interactive elements, and more."
-                      }
-                    </p>
-
-                    {/* Placeholder for lesson content */}
-                    <div className="bg-gray-100 rounded-lg p-8 text-center">
-                      <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">
-                        Lesson content will be rendered here based on the lesson
-                        type and content.
+                    <BoxReveal boxColor="#2563eb" duration={0.6}>
+                      <p className="text-blue-800 mb-6">
+                        {
+                          "Lesson content will be displayed here. This could include video, text, interactive elements, and more."
+                        }
                       </p>
-                    </div>
-                  </div>
-
+                    </BoxReveal>{" "}
+                    {/* Placeholder for lesson content */}
+                    <BoxReveal boxColor="#2563eb" duration={0.8}>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+                        <BookOpen className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+                        <div className="text-blue-600">
+                          <TextAnimate animation="blurInUp" by="word">
+                            Lesson content will be rendered here based on the
+                            lesson type and content.
+                          </TextAnimate>
+                        </div>
+                      </div>
+                    </BoxReveal>
+                  </div>{" "}
                   {/* Lesson Actions */}
-                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-blue-200">
                     <Button
                       variant="outline"
                       onClick={() => navigateToLesson("prev")}
                       disabled={currentLessonIndex === 0}
+                      className="border-blue-300 text-blue-600 hover:bg-blue-50"
                     >
                       <ChevronLeft className="h-4 w-4 mr-2" />
                       Previous Lesson
@@ -403,6 +412,11 @@ export function CourseLearningInterface({
                         lessonStates[currentLesson.id]?.completed
                           ? "outline"
                           : "default"
+                      }
+                      className={
+                        lessonStates[currentLesson.id]?.completed
+                          ? "border-blue-300 text-blue-600 hover:bg-blue-50"
+                          : "bg-blue-600 hover:bg-blue-700"
                       }
                     >
                       {lessonStates[currentLesson.id]?.completed ? (
@@ -421,6 +435,8 @@ export function CourseLearningInterface({
                     <Button
                       onClick={() => navigateToLesson("next")}
                       disabled={currentLessonIndex === allLessons.length - 1}
+                      className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                      variant="outline"
                     >
                       Next Lesson
                       <ChevronRight className="h-4 w-4 ml-2" />

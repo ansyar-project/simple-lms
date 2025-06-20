@@ -1,7 +1,11 @@
+"use client";
+
 import { MagicCard } from "@/components/magicui/magic-card";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { AnimatedCircularProgressBar } from "@/components/magicui/animated-circular-progress-bar";
+import { useRouter } from "next/navigation";
+import { formatDate } from "@/lib/utils";
 
 export interface ModernCourseCardProps {
   title: string;
@@ -10,8 +14,7 @@ export interface ModernCourseCardProps {
   progress: number;
   enrolledAt: Date;
   completedAt?: Date;
-  onStart: () => void;
-  onView: () => void;
+  courseId: string;
   featured?: boolean;
 }
 
@@ -22,10 +25,18 @@ export const ModernCourseCard: React.FC<ModernCourseCardProps> = ({
   progress,
   enrolledAt,
   completedAt,
-  onStart,
-  onView,
+  courseId,
   featured = false,
 }) => {
+  const router = useRouter();
+
+  const handleStart = () => {
+    router.push(`/courses/${courseId}/learn`);
+  };
+
+  const handleView = () => {
+    router.push(`/courses/${courseId}`);
+  };
   return (
     <div className="relative group">
       <MagicCard className="rounded-2xl overflow-hidden shadow-lg bg-blue-50 border border-blue-200">
@@ -63,9 +74,9 @@ export const ModernCourseCard: React.FC<ModernCourseCardProps> = ({
                   gaugeSecondaryColor="#1e40af"
                   className="mx-auto"
                 />
-              </div>
+              </div>{" "}
               <div className="flex items-center justify-between text-xs text-blue-600 mb-3">
-                <span>Enrolled {enrolledAt.toLocaleDateString()}</span>
+                <span>Enrolled {formatDate(enrolledAt)}</span>
                 {completedAt && (
                   <span className="flex items-center gap-1 text-blue-500">
                     <svg
@@ -80,16 +91,16 @@ export const ModernCourseCard: React.FC<ModernCourseCardProps> = ({
                     Completed
                   </span>
                 )}
-              </div>
+              </div>{" "}
               <div className="flex gap-2">
                 <button
-                  onClick={onStart}
+                  onClick={handleStart}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2 font-semibold transition-colors"
                 >
                   {progress === 0 ? "Start Learning" : "Continue"}
                 </button>
                 <button
-                  onClick={onView}
+                  onClick={handleView}
                   className="bg-blue-100 hover:bg-blue-200 text-blue-800 rounded px-3 py-2"
                 >
                   View

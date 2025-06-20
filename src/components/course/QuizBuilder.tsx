@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createQuiz, updateQuiz, publishQuiz } from "@/actions/quizzes";
+import { TextAnimate } from "@/components/magicui/text-animate";
+import { BoxReveal } from "@/components/magicui/box-reveal";
 import type { QuizFormData, QuestionFormData, QuestionType } from "@/types";
 import {
   DragDropContext,
@@ -260,18 +262,24 @@ export function QuizBuilder({
 
   return (
     <div className="space-y-6">
+      {" "}
       {/* Quiz Settings */}
-      <Card>
+      <Card className="border-blue-200">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Quiz Settings
-          </CardTitle>
+          <BoxReveal boxColor="#2563eb">
+            <CardTitle className="flex items-center gap-2 text-blue-900">
+              <Settings className="h-5 w-5 text-blue-600" />
+              <TextAnimate animation="blurInUp" by="word">
+                Quiz Settings
+              </TextAnimate>
+            </CardTitle>
+          </BoxReveal>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setPreviewMode(!previewMode)}
+              className="border-blue-300 text-blue-600 hover:bg-blue-50"
             >
               {previewMode ? (
                 <EyeOff className="h-4 w-4" />
@@ -286,11 +294,17 @@ export function QuizBuilder({
                 disabled={loading}
                 size="sm"
                 variant="secondary"
+                className="bg-blue-100 text-blue-700 hover:bg-blue-200"
               >
                 Publish Quiz
               </Button>
             )}
-            <Button onClick={handleSave} disabled={loading} size="sm">
+            <Button
+              onClick={handleSave}
+              disabled={loading}
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700"
+            >
               <Save className="h-4 w-4 mr-2" />
               {loading ? "Saving..." : "Save Quiz"}
             </Button>
@@ -431,7 +445,6 @@ export function QuizBuilder({
           </div>
         </CardContent>
       </Card>
-
       {/* Questions */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">

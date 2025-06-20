@@ -2,8 +2,8 @@
 *Instructions for generating consistent, high-quality code that follows project standards and best practices.*
 
 ## General Guidelines
-- **Always use context7** to get latest documentation of dependencies.
-- **Always store file relations** in memory to maintain consistency across tasks.
+- **Always use context7 MCP** to get latest documentation of dependencies.
+- **Always store file relations in memory MCP** to maintain consistency across tasks.
 
 ## Core Workflow Principles
 - **Always provide a plan before writing code**, especially for complex features or components

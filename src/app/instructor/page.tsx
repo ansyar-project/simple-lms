@@ -1,13 +1,20 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getInstructorDashboard } from "@/actions/courses";
-import { BookOpen, Users, DollarSign, PlusCircle } from "lucide-react";
+import { BookOpen, Users, PlusCircle } from "lucide-react";
 import {
   AnimatedList,
   AnimatedListItem,
 } from "@/components/magicui/animated-list";
 import { File, Folder, Tree } from "@/components/magicui/file-tree";
 import { ProgressChart } from "@/components/analytics/Charts";
+import { DashboardWidgetsSheet } from "@/components/dashboard/DashboardWidgetsSheet";
+import {
+  DashboardBentoGrid,
+  StatsBentoItem,
+  ListBentoItem,
+  ChartBentoItem,
+} from "@/components/dashboard/DashboardBentoGrid";
 
 // Force dynamic rendering since we use auth()
 export const dynamic = "force-dynamic";
@@ -76,72 +83,83 @@ export default async function InstructorDashboardPage() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Manage your courses and track your teaching progress
           </p>
+
+          {/* Mobile Dashboard Menu */}
+          <div className="mt-6 flex justify-center md:hidden">
+            <DashboardWidgetsSheet
+              title="Teaching Overview"
+              description="Your course management and student metrics"
+              triggerLabel="View Dashboard"
+            >
+              {" "}
+              <div className="space-y-4">
+                <StatsBentoItem
+                  title="Total Courses"
+                  value={dashboardData.stats.totalCourses}
+                  icon="BookOpen"
+                  description="All created courses"
+                  trend="neutral"
+                />
+                <StatsBentoItem
+                  title="Published"
+                  value={dashboardData.stats.publishedCourses}
+                  icon="BookOpen"
+                  description="Live courses"
+                  trend="up"
+                />
+                <StatsBentoItem
+                  title="Total Students"
+                  value={dashboardData.stats.totalEnrollments}
+                  icon="Users"
+                  description="Enrolled learners"
+                  trend="up"
+                />
+                <StatsBentoItem
+                  title="Revenue"
+                  value={`$${dashboardData.stats.totalRevenue.toFixed(2)}`}
+                  icon="DollarSign"
+                  description="Total earnings"
+                  trend="up"
+                />
+              </div>
+            </DashboardWidgetsSheet>
+          </div>
         </div>
 
         <div className="space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 hover:bg-white/80 transition-all duration-300">
-              <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <BookOpen className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Courses
-                  </p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    {dashboardData.stats.totalCourses}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 hover:bg-white/80 transition-all duration-300">
-              <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <BookOpen className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Published</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {dashboardData.stats.publishedCourses}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 hover:bg-white/80 transition-all duration-300">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Users className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Students
-                  </p>
-                  <p className="text-2xl font-bold text-purple-600">
-                    {dashboardData.stats.totalEnrollments}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 hover:bg-white/80 transition-all duration-300">
-              <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <DollarSign className="h-6 w-6 text-yellow-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Revenue
-                  </p>
-                  <p className="text-2xl font-bold text-yellow-600">
-                    ${dashboardData.stats.totalRevenue.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Desktop Bento Grid Layout */}
+          <div className="hidden md:block">
+            {" "}
+            <DashboardBentoGrid>
+              <StatsBentoItem
+                title="Total Courses"
+                value={dashboardData.stats.totalCourses}
+                icon="BookOpen"
+                description="All created courses"
+                trend="neutral"
+              />
+              <StatsBentoItem
+                title="Published"
+                value={dashboardData.stats.publishedCourses}
+                icon="BookOpen"
+                description="Live courses"
+                trend="up"
+              />
+              <StatsBentoItem
+                title="Total Students"
+                value={dashboardData.stats.totalEnrollments}
+                icon="Users"
+                description="Enrolled learners"
+                trend="up"
+              />
+              <StatsBentoItem
+                title="Revenue"
+                value={`$${dashboardData.stats.totalRevenue.toFixed(2)}`}
+                icon="DollarSign"
+                description="Total earnings"
+                trend="up"
+              />
+            </DashboardBentoGrid>
           </div>
 
           {/* Quick Actions */}
@@ -196,23 +214,12 @@ export default async function InstructorDashboardPage() {
             </div>
           </div>
 
-          {/* Recent Courses and Enrollments Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                  Recent Courses
-                </h2>
-                <Link href="/instructor/courses">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-blue-50"
-                  >
-                    View All
-                  </Button>
-                </Link>
-              </div>
+          {/* Recent Courses and Enrollments Bento Grid */}
+          <DashboardBentoGrid className="grid-cols-1 lg:grid-cols-2">
+            <ListBentoItem
+              title="Recent Courses"
+              description="Your latest course creations"
+            >
               <div className="space-y-3">
                 {dashboardData.recentCourses.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">
@@ -228,12 +235,12 @@ export default async function InstructorDashboardPage() {
                               <h3 className="font-medium text-gray-900 truncate hover:text-blue-600">
                                 {course.title}
                               </h3>
-                            </Link>{" "}
+                            </Link>
                             <p className="text-sm text-gray-500">
-                              {course._count?.modules ?? 0} modules {" "}
+                              {course._count?.modules ?? 0} modules •{" "}
                               {course._count?.enrollments ?? 0} students
                             </p>
-                          </div>{" "}
+                          </div>
                           <div className="flex items-center space-x-2">
                             <span
                               className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeStyles(
@@ -248,13 +255,24 @@ export default async function InstructorDashboardPage() {
                     ))}
                   </AnimatedList>
                 )}
+                <div className="mt-4 text-center">
+                  <Link href="/instructor/courses">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-blue-50"
+                    >
+                      View All
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
+            </ListBentoItem>
 
-            <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4">
-                Recent Enrollments
-              </h2>
+            <ListBentoItem
+              title="Recent Enrollments"
+              description="Latest student enrollments"
+            >
               <div className="space-y-3">
                 {dashboardData.recentEnrollments.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">
@@ -288,62 +306,65 @@ export default async function InstructorDashboardPage() {
                     ))
                 )}
               </div>
-            </div>
-          </div>
+            </ListBentoItem>
+          </DashboardBentoGrid>
 
-          {/* Course Content Structure and Analytics Placeholders */}
-          <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 mt-8">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4">
-              Course Content Structure
-            </h2>{" "}
-            {/* Magic UI File Tree visualization */}
-            <Tree className="w-full max-w-md mx-auto">
-              <Folder element="Courses" value="courses-root">
-                {dashboardData.recentCourses.map((course) => (
-                  <Folder
-                    key={course.id}
-                    element={course.title}
-                    value={course.id}
-                  >
-                    <File value={course.id + "-modules"}>
-                      modules: {course._count?.modules ?? 0}
-                    </File>
-                    <File value={course.id + "-students"}>
-                      students: {course._count?.enrollments ?? 0}
-                    </File>
+          {/* Course Structure and Analytics Bento Grid */}
+          <DashboardBentoGrid className="grid-cols-1 lg:grid-cols-2">
+            <ListBentoItem
+              title="Course Content Structure"
+              description="Visual course organization"
+            >
+              <div className="flex justify-center">
+                <Tree className="w-full max-w-md">
+                  <Folder element="Courses" value="courses-root">
+                    {dashboardData.recentCourses.map((course) => (
+                      <Folder
+                        key={course.id}
+                        element={course.title}
+                        value={course.id}
+                      >
+                        <File value={course.id + "-modules"}>
+                          modules: {course._count?.modules ?? 0}
+                        </File>
+                        <File value={course.id + "-students"}>
+                          students: {course._count?.enrollments ?? 0}
+                        </File>
+                      </Folder>
+                    ))}
                   </Folder>
-                ))}
-              </Folder>
-            </Tree>
-          </div>
-          <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 mt-8">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4">
-              Analytics
-            </h2>
-            {/* Course Enrollment Trends Chart (real data) */}
-            <ProgressChart
+                </Tree>
+              </div>
+            </ListBentoItem>
+
+            <ChartBentoItem
               title="Course Enrollment Trends"
-              data={dashboardData.recentEnrollments.reduce(
-                (acc, enrollment) => {
-                  const date = new Date(enrollment.enrolledAt)
-                    .toISOString()
-                    .split("T")[0];
-                  const found = acc.find((item) => item.date === date);
-                  if (found) {
-                    found.coursesStudied += 1;
-                  } else {
-                    acc.push({ date, coursesStudied: 1 });
-                  }
-                  return acc;
-                },
-                [] as { date: string; coursesStudied: number }[]
-              )}
-              dataKey="coursesStudied"
-              color="#2563eb"
-              type="line"
-              height={280}
-            />
-          </div>
+              description="Analytics overview"
+            >
+              <ProgressChart
+                title=""
+                data={dashboardData.recentEnrollments.reduce(
+                  (acc, enrollment) => {
+                    const date = new Date(enrollment.enrolledAt)
+                      .toISOString()
+                      .split("T")[0];
+                    const found = acc.find((item) => item.date === date);
+                    if (found) {
+                      found.coursesStudied += 1;
+                    } else {
+                      acc.push({ date, coursesStudied: 1 });
+                    }
+                    return acc;
+                  },
+                  [] as { date: string; coursesStudied: number }[]
+                )}
+                dataKey="coursesStudied"
+                color="#2563eb"
+                type="line"
+                height={240}
+              />
+            </ChartBentoItem>
+          </DashboardBentoGrid>
         </div>
       </div>
     </main>

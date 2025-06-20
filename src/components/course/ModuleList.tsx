@@ -54,6 +54,7 @@ interface ModuleListProps {
   onEditModule: (module: Module) => void;
   onCreateLesson: (moduleId: string) => void;
   onEditLesson: (moduleId: string, lessonId: string) => void;
+  onPreviewLesson: (lessonId: string) => void;
   onRefresh: () => void;
 }
 
@@ -63,6 +64,7 @@ interface SortableModuleProps {
   onDelete: (moduleId: string) => void;
   onCreateLesson: (moduleId: string) => void;
   onEditLesson: (moduleId: string, lessonId: string) => void;
+  onPreviewLesson: (lessonId: string) => void;
 }
 
 function SortableModule({
@@ -71,6 +73,7 @@ function SortableModule({
   onDelete,
   onCreateLesson,
   onEditLesson,
+  onPreviewLesson,
 }: Readonly<SortableModuleProps>) {
   const { toast } = useToast();
   const {
@@ -216,11 +219,9 @@ function SortableModule({
         ) : (
           <div className="space-y-2">
             {module.lessons.map((lesson, index) => (
-              <button
+              <div
                 key={lesson.id}
-                type="button"
-                className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer group w-full text-left"
-                onClick={() => onEditLesson(module.id, lesson.id)}
+                className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 group"
               >
                 <span className="text-xs text-muted-foreground w-6 text-center">
                   {index + 1}
@@ -238,9 +239,26 @@ function SortableModule({
                       </>
                     )}
                   </div>
-                </div>{" "}
-                <Edit className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-              </button>
+                </div>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onPreviewLesson(lesson.id)}
+                    className="h-8 px-2"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEditLesson(module.id, lesson.id)}
+                    className="h-8 px-2"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             ))}
 
             <Button
@@ -265,6 +283,7 @@ export default function ModuleList({
   onEditModule,
   onCreateLesson,
   onEditLesson,
+  onPreviewLesson,
   onRefresh,
 }: Readonly<ModuleListProps>) {
   const { toast } = useToast();
@@ -350,6 +369,7 @@ export default function ModuleList({
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        {" "}
         <div className="space-y-4">
           {items.map((module) => (
             <SortableModule
@@ -359,6 +379,7 @@ export default function ModuleList({
               onDelete={handleDeleteModule}
               onCreateLesson={onCreateLesson}
               onEditLesson={onEditLesson}
+              onPreviewLesson={onPreviewLesson}
             />
           ))}
         </div>

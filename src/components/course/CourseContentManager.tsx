@@ -128,17 +128,24 @@ export default function CourseContentManager({
       alert("Failed to load lesson");
     }
   };
-  // Remove unused function
-  // const handlePreviewLesson = async (lessonId: string) => {
-  //   try {
-  //     const lesson = await getLesson(lessonId);
-  //     setSelectedLesson(lesson);
-  //     setCurrentView("preview-lesson");
-  //   } catch (error) {
-  //     console.error("Error loading lesson:", error);
-  //     alert("Failed to load lesson");
-  //   }
-  // };
+
+  const handlePreviewLesson = async (lessonId: string) => {
+    try {
+      const lesson = await getLesson(lessonId);
+      // Convert null to undefined for type compatibility
+      const convertedLesson = {
+        ...lesson,
+        content: lesson.content ?? undefined,
+        videoUrl: lesson.videoUrl ?? undefined,
+        duration: lesson.duration ?? undefined,
+      };
+      setSelectedLesson(convertedLesson);
+      setCurrentView("preview-lesson");
+    } catch (error) {
+      console.error("Error loading lesson:", error);
+      alert("Failed to load lesson");
+    }
+  };
 
   const handleSuccess = () => {
     setCurrentView("list");
@@ -228,6 +235,7 @@ export default function CourseContentManager({
                 onEditModule={handleEditModule}
                 onCreateLesson={handleCreateLesson}
                 onEditLesson={handleEditLesson}
+                onPreviewLesson={handlePreviewLesson}
                 onRefresh={loadModules}
               />
             )}

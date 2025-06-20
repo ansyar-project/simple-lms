@@ -26,6 +26,7 @@ describe("ModuleList", () => {
   const mockOnCreateLesson = jest.fn();
   const mockOnEditLesson = jest.fn();
   const mockOnRefresh = jest.fn();
+  const mockOnPreviewLesson = jest.fn();
 
   const mockModules = [
     {
@@ -68,7 +69,6 @@ describe("ModuleList", () => {
       },
     },
   ];
-
   const defaultProps = {
     courseId: "course_123",
     modules: mockModules,
@@ -76,10 +76,15 @@ describe("ModuleList", () => {
     onCreateLesson: mockOnCreateLesson,
     onEditLesson: mockOnEditLesson,
     onRefresh: mockOnRefresh,
-  };
-  beforeEach(() => {
+    onPreviewLesson: mockOnPreviewLesson,
+  };  beforeEach(() => {
     jest.clearAllMocks();
     mockToast.mockClear();
+    mockOnEditModule.mockClear();
+    mockOnCreateLesson.mockClear();
+    mockOnEditLesson.mockClear();
+    mockOnRefresh.mockClear();
+    mockOnPreviewLesson.mockClear();
   });
 
   describe("Rendering", () => {

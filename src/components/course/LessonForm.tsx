@@ -133,12 +133,12 @@ export default function LessonForm({
           </div>
 
           <div className="space-y-3">
-            <Label>Content Type</Label>
+            <Label>Content Type</Label>{" "}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {contentTypes.map((type) => {
                 const Icon = type.icon;
                 const isSelected = contentType === type.value;
-                const isDisabled = ["QUIZ", "ASSIGNMENT"].includes(type.value);
+                const isDisabled = ["ASSIGNMENT"].includes(type.value);
 
                 return (
                   <button

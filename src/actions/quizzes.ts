@@ -13,6 +13,7 @@ import {
   reorderQuestionsSchema,
 } from "@/lib/validations";
 import type { QuizFormData, QuestionFormData, QuizResult } from "@/types";
+import { serializeCourse } from "@/lib/utils";
 
 // Quiz CRUD Operations
 export async function createQuiz(data: QuizFormData) {
@@ -747,7 +748,23 @@ export async function getQuizWithQuestions(quizId: string) {
       },
     });
 
-    return quiz;
+    if (!quiz) {
+      return null;
+    }
+
+    // Serialize course data for client components
+    const serializedQuiz = {
+      ...quiz,
+      lesson: {
+        ...quiz.lesson,
+        module: {
+          ...quiz.lesson.module,
+          course: serializeCourse(quiz.lesson.module.course),
+        },
+      },
+    };
+
+    return serializedQuiz;
   } catch (error) {
     console.error("Get quiz with questions error:", error);
     return null;

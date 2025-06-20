@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { submitQuizAttempt } from "@/actions/quizzes";
+import { Confetti, ConfettiRef } from "@/components/magicui/confetti";
+import { ScratchToReveal } from "@/components/magicui/scratch-to-reveal";
 import type { QuizWithQuestions, QuizTakingState, QuizResult } from "@/types";
 
 interface QuizTakerProps {
@@ -390,61 +392,95 @@ export function QuizResults({
 }: Readonly<QuizResultsProps>) {
   const percentage = Math.round(result.score);
   const passed = result.passed;
+  const confettiRef = useRef<ConfettiRef>(null);
+
+  // Trigger confetti when passed
+  useEffect(() => {
+    if (passed && confettiRef.current) {
+      // Fire confetti after a short delay for better UX
+      setTimeout(() => {
+        confettiRef.current?.fire({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#2563eb", "#3b82f6", "#60a5fa", "#93c5fd"],
+        });
+      }, 500);
+    }
+  }, [passed]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Confetti for passing */}
+      {passed && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <Confetti ref={confettiRef} />
+        </div>
+      )}
       {/* Results Summary */}
-      <Card>
+      <Card className="border-blue-200">
         <CardHeader className="text-center">
           <div className="mb-4">
             {passed ? (
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+              <CheckCircle className="h-16 w-16 text-blue-500 mx-auto" />
             ) : (
               <XCircle className="h-16 w-16 text-red-500 mx-auto" />
             )}
           </div>
-          <CardTitle className="text-2xl">
+          <CardTitle className="text-2xl text-blue-900">
             {passed ? "Congratulations!" : "Quiz Complete"}
           </CardTitle>
-          <p className="text-muted-foreground">
+          <p className="text-blue-600">
             {passed ? "You passed the quiz!" : "Better luck next time!"}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-            <div className="p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {percentage}%
+          {/* Scratch to reveal score */}
+          <div className="flex justify-center">
+            <ScratchToReveal width={300} height={150} minScratchPercentage={30}>
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 text-center">
+                <div className="text-4xl font-bold text-blue-600 mb-2">
+                  {percentage}%
+                </div>
+                <div className="text-blue-800 font-medium">Your Score</div>
+                {passed && (
+                  <div className="text-blue-500 mt-2 font-semibold">
+                    🎉 PASSED! 🎉
+                  </div>
+                )}
               </div>
-              <div className="text-sm text-muted-foreground">Score</div>
+            </ScratchToReveal>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+            <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+              <div className="text-2xl font-bold text-blue-600">
+                {result.answers.length}
+              </div>
+              <div className="text-sm text-blue-800">Questions</div>
             </div>
-            <div className="p-4 border rounded-lg">
-              <div className="text-2xl font-bold">{result.answers.length}</div>
-              <div className="text-sm text-muted-foreground">Questions</div>
-            </div>
-            <div className="p-4 border rounded-lg">
-              <div className="text-2xl font-bold">
+            <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+              <div className="text-2xl font-bold text-blue-600">
                 {Math.floor(result.timeSpent / 60)}:
                 {(result.timeSpent % 60).toString().padStart(2, "0")}
               </div>
-              <div className="text-sm text-muted-foreground">Time Spent</div>
+              <div className="text-sm text-blue-800">Time Spent</div>
             </div>
           </div>
 
           {quiz.passingScore && (
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-sm text-muted-foreground mb-2">
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="text-sm text-blue-800 mb-2 font-medium">
                 Passing Score
               </div>
               <Progress value={quiz.passingScore} className="mb-2" />
-              <div className="text-sm">
+              <div className="text-sm text-blue-600">
                 Required: {quiz.passingScore}% | Your Score: {percentage}%
               </div>
             </div>
           )}
         </CardContent>
       </Card>
-
       {/* Question Results */}
       {quiz.showResults && (
         <Card>
@@ -535,18 +571,23 @@ export function QuizResults({
             })}
           </CardContent>
         </Card>
-      )}
-
+      )}{" "}
       {/* Actions */}
-      <Card>
+      <Card className="border-blue-200">
         <CardContent className="p-4">
           <div className="flex justify-center gap-4">
             {onRetake && (
-              <Button variant="outline" onClick={onRetake}>
+              <Button
+                variant="outline"
+                onClick={onRetake}
+                className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              >
                 Retake Quiz
               </Button>
             )}
-            <Button onClick={onClose}>Continue Learning</Button>
+            <Button onClick={onClose} className="bg-blue-600 hover:bg-blue-700">
+              Continue Learning
+            </Button>
           </div>
         </CardContent>
       </Card>

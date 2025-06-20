@@ -9,6 +9,7 @@ import {
   reorderLessonsSchema,
   type ReorderLessonsInput,
 } from "@/lib/validations";
+import { serializeCourse } from "@/lib/utils";
 
 export interface LessonFormState {
   success: boolean;
@@ -369,7 +370,16 @@ export async function getLesson(lessonId: string) {
       throw new Error("Lesson not found or access denied");
     }
 
-    return lesson;
+    // Serialize course data for client components
+    const serializedLesson = {
+      ...lesson,
+      module: {
+        ...lesson.module,
+        course: serializeCourse(lesson.module.course),
+      },
+    };
+
+    return serializedLesson;
   } catch (error) {
     console.error("Error fetching lesson:", error);
     throw error;

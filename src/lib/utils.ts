@@ -33,7 +33,57 @@ export function formatPrice(price: number): string {
   }).format(price);
 }
 
-export function calculateProgress(completed: number, total: number): number {
-  if (total === 0) return 0;
-  return Math.round((completed / total) * 100);
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
+// Helper function to serialize Decimal fields for client components
+export type SerializableDecimal =
+  | number
+  | { toNumber: () => number }
+  | string
+  | null
+  | undefined;
+
+export function serializeDecimal(value: SerializableDecimal): number | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  if (typeof value === "number") {
+    return value;
+  }
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    "toNumber" in value &&
+    typeof value.toNumber === "function"
+  ) {
+    return value.toNumber();
+  }
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return isNaN(parsed) ? null : parsed;
+  }
+  return null;
+}
+
+// Helper function to serialize course data for client components
+export function serializeCourse<T extends { price?: SerializableDecimal }>(
+  course: T
+): T & { price: number | null } {
+  return {
+    ...course,
+    price: serializeDecimal(course.price),
+  };
+}
+
+// Helper function to serialize array of courses
+export function serializeCourses<T extends { price?: SerializableDecimal }>(
+  courses: T[]
+): Array<T & { price: number | null }> {
+  return courses.map(serializeCourse);
 }
