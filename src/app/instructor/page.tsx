@@ -295,13 +295,17 @@ export default async function InstructorDashboardPage() {
           <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-blue-100 mt-8">
             <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-4">
               Course Content Structure
-            </h2>
+            </h2>{" "}
             {/* Magic UI File Tree visualization */}
             <Tree className="w-full max-w-md mx-auto">
-              <Folder element="Courses">
+              <Folder element="Courses" value="courses-root">
                 {dashboardData.recentCourses.map((course) => (
-                  <Folder key={course.id} element={course.title}>
-                    <File value={course.id}>
+                  <Folder
+                    key={course.id}
+                    element={course.title}
+                    value={course.id}
+                  >
+                    <File value={course.id + "-modules"}>
                       modules: {course._count?.modules ?? 0}
                     </File>
                     <File value={course.id + "-students"}>
