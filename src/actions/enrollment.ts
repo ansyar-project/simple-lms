@@ -285,10 +285,13 @@ export async function getCourseProgress(courseId: string) {
       totalLessons > 0
         ? Math.round((completedLessons / totalLessons) * 100)
         : 0;
-
     return {
       enrollment,
-      course,
+      course: {
+        ...course,
+        // Convert Decimal to number for client component compatibility
+        price: course.price ? course.price.toNumber() : null,
+      },
       lessonProgress: lessonProgress.reduce((acc, progress) => {
         acc[progress.lessonId] = progress;
         return acc;

@@ -388,10 +388,12 @@ describe("Enrollment Actions", () => {
       );
 
       const result = await getCourseProgress("course-1");
-
       expect(result).toEqual({
         enrollment: mockEnrollment,
-        course: mockCourse,
+        course: {
+          ...mockCourse,
+          price: null, // Added serialized price field
+        },
         lessonProgress: {
           "lesson-1": mockLessonProgress[0],
           "lesson-2": mockLessonProgress[1],

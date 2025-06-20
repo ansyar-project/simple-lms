@@ -36,6 +36,7 @@ interface CourseData {
   course: {
     id: string;
     title: string;
+    price: number | null;
     modules: Array<{
       id: string;
       title: string;
@@ -240,16 +241,16 @@ export function CourseLearningInterface({
                   {module.title}
                 </h3>
                 <div className="space-y-2">
+                  {" "}
                   {module.lessons.map((lesson) => {
                     const isCompleted =
                       lessonStates[lesson.id]?.completed ?? false;
                     const isSelected = selectedLessonId === lesson.id;
 
                     return (
-                      <button
+                      <div
                         key={lesson.id}
-                        onClick={() => handleLessonSelect(lesson.id)}
-                        className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                        className={`w-full p-3 rounded-lg border transition-colors ${
                           isSelected
                             ? "bg-blue-50 border-blue-200 text-blue-900"
                             : "hover:bg-gray-50 border-gray-200"
@@ -261,7 +262,12 @@ export function CourseLearningInterface({
                               e.stopPropagation();
                               handleToggleComplete(lesson.id);
                             }}
-                            className="flex-shrink-0"
+                            className="flex-shrink-0 hover:scale-110 transition-transform"
+                            aria-label={
+                              isCompleted
+                                ? "Mark lesson incomplete"
+                                : "Mark lesson complete"
+                            }
                           >
                             {isCompleted ? (
                               <CheckCircle className="h-5 w-5 text-green-500" />
@@ -269,7 +275,10 @@ export function CourseLearningInterface({
                               <Circle className="h-5 w-5 text-gray-400" />
                             )}
                           </button>
-                          <div className="flex-1 min-w-0">
+                          <button
+                            onClick={() => handleLessonSelect(lesson.id)}
+                            className="flex-1 min-w-0 text-left"
+                          >
                             <div className="font-medium text-sm line-clamp-2">
                               {lesson.title}
                             </div>
@@ -279,9 +288,9 @@ export function CourseLearningInterface({
                                 {lesson.duration} min
                               </div>
                             )}
-                          </div>
+                          </button>
                         </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
